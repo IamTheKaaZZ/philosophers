@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/07/19 12:12:31 by bcosters         ###   ########.fr        #
+#    Updated: 2021/07/27 12:16:30 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,10 +32,10 @@ CFLAGS	= -Wall -Wextra -Werror -pthread
 
 #	Implicit rules
 
-%.o: %.c
+%.o: %.c	$(HEADER)
 			@$(CC) $(CFLAGS) -c $< -o $@
 
-obj/%.o: src/%.c
+obj/%.o: src/%.c $(HEADER)
 			@echo Compiling object $@
 			@$(CC) $(CFLAGS) -c $< -o $@
 
@@ -44,14 +44,14 @@ obj/%.o: src/%.c
 all:		$(NAME)
 
 $(NAME):	$(OBJDR) $(OBJS) $(HEADER)
-			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -o $(NAME)
+			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -pthread -o $(NAME)
 			#--------------------------------#
-			@echo "Finished compiling $(NAME)"
+			@echo "Finished compiling MANDATORY $(NAME)"
 
 bonus:		$(NAME)
-			@$(CC) $(CFLAGS) $(CHECKSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(CHECK)
+			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -pthread -o $(NAME)
 			#--------------------------------#
-			@echo "Finished compiling $(CHECK)"
+			@echo "Finished compiling BONUS $(NAME)"
 
 $(OBJDR):
 			@mkdir -p $(OBJDR)
