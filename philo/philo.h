@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/28 11:15:57 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/28 12:24:25 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <sys/time.h>
 # include <string.h>
 # include <limits.h>
+# define TRUE 1
+# define FALSE 0
 
 typedef unsigned long	t_ul;
 typedef int				t_bool;
@@ -56,9 +58,19 @@ typedef struct s_data
 }					t_data;
 
 /*
+**	Init and error
+*/
+
+int		error_exit(t_data *d, char *errmessage, t_bool clear);
+t_bool	error_and_init(t_data *d, int argc, char **argv);
+void	init_philos(t_philo *philos, int n_philos);
+t_bool	init_mutexes(t_data	*d);
+
+/*
 **	Helper functions
 */
 
-int	ft_atoi(const char *numstr);
+int		ft_atoi(const char *numstr);
+size_t	ft_strlen(const char *str);
 
 #endif
