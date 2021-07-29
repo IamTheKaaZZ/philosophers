@@ -6,40 +6,40 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/28 12:24:30 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/29 11:42:28 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-static t_bool	init_struct(t_data *d, int argc, char **argv)
+static t_bool	setup_table(t_table *t, int argc, char **argv)
 {
-	d->n_philos = (long)ft_atoi(argv[1]);
-	d->death_time = (long)ft_atoi(argv[2]);
-	d->eat_time = (long)ft_atoi(argv[3]);
-	d->sleep_time = (long)ft_atoi(argv[4]);
-	if (d->n_philos < 2 || d->n_philos > 200)
+	t->n_philos = (long)ft_atoi(argv[1]);
+	t->death_time = (long)ft_atoi(argv[2]);
+	t->eat_time = (long)ft_atoi(argv[3]);
+	t->sleep_time = (long)ft_atoi(argv[4]);
+	if (t->n_philos < 2 || t->n_philos > 200)
 		return (1);
-	if (d->death_time < 60)
+	if (t->death_time < 60)
 		return (1);
-	if (d->eat_time < 60)
+	if (t->eat_time < 60)
 		return (1);
-	if (d->sleep_time < 60)
+	if (t->sleep_time < 60)
 		return (1);
 	if (argc == 6)
 	{
-		d->max_eat = (long)ft_atoi(argv[5]);
-		if (d->max_eat < 0)
+		t->max_eat = (long)ft_atoi(argv[5]);
+		if (t->max_eat < 0)
 			return (1);
 	}
 	else
-		d->max_eat = -1;
-	d->philos = NULL;
-	d->forks_mutex = NULL;
+		t->max_eat = -1;
+	t->philos = NULL;
+	t->forks_mutex = NULL;
 	return (0);
 }
 
-t_bool	error_and_init(t_data *d, int argc, char **argv)
+t_bool	error_and_init(t_table *t, int argc, char **argv)
 {
 	if (argc != 6)
 	{
@@ -54,15 +54,15 @@ t_bool	error_and_init(t_data *d, int argc, char **argv)
 			return (1);
 		}
 	}
-	if (init_struct(d, argc, argv))
+	if (setup_table(t, argc, argv))
 		return (1);
-	d->philos = (t_philo *)malloc(d->n_philos * sizeof(t_philo));
-	if (!d->philos)
+	t->philos = (t_philo *)malloc(t->n_philos * sizeof(t_philo));
+	if (!t->philos)
 		return (1);
 	return (0);
 }
 
-void	init_philos(t_philo *philos, int n_philos)
+void	init_philos(t_table *t, t_philo *philos, int n_philos)
 {
 	int	i;
 
@@ -76,31 +76,29 @@ void	init_philos(t_philo *philos, int n_philos)
 		else
 			philos[i].right_fork = i + 1;
 		philos[i].eat_count = 0;
-		philos[i].has_forks = FALSE;
-		philos[i].is_eating = FALSE;
-		philos[i].is_asleep = FALSE;
-		philos[i].is_thinking = FALSE;
-		philos[i].is_dead = FALSE;
+		philos[i].status = THINKING;
+		philos[i].time_to_die = t->death_time;
 		philos[i].time_since_eat = 0;
+		philos[i].new_death_time = 0;
 		pthread_mutex_init(&philos[i].philo_mutex, NULL);
 		pthread_mutex_init(&philos[i].eating_mutex, NULL);
 		pthread_mutex_lock(&philos[i].eating_mutex);
 	}
 }
 
-t_bool	init_mutexes(t_data	*d)
+t_bool	init_mutexes(t_table	*t)
 {
 	int	i;
 
-	pthread_mutex_init(&d->message_mutex, NULL);
-	pthread_mutex_init(&d->dead_mutex, NULL);
-	pthread_mutex_lock(&d->dead_mutex);
-	d->forks_mutex =
-		(pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * d->n_philos);
-	if (!d->forks_mutex)
+	pthread_mutex_init(&t->message_mutex, NULL);
+	pthread_mutex_init(&t->dead_mutex, NULL);
+	pthread_mutex_lock(&t->dead_mutex);
+	t->forks_mutex =
+		(pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * t->n_philos);
+	if (!t->forks_mutex)
 		return (1);
 	i = -1;
-	while (++i < d->n_philos)
-		pthread_mutex_init(&d->forks_mutex[i], NULL);
+	while (++i < t->n_philos)
+		pthread_mutex_init(&t->forks_mutex[i], NULL);
 	return (0);
 }

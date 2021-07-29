@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/28 12:24:25 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/29 11:53:54 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,20 @@
 # include <limits.h>
 # define TRUE 1
 # define FALSE 0
+# define ONE_MS 1000
 
 typedef unsigned long	t_ul;
 typedef int				t_bool;
+
+typedef enum s_status
+{
+	TOOK_FORK,
+	EATING,
+	SLEEPING,
+	THINKING,
+	DEAD,
+	FULL_END
+}	t_status;
 
 typedef struct s_philo
 {
@@ -33,17 +44,15 @@ typedef struct s_philo
 	int				left_fork;
 	int				right_fork;
 	int				eat_count;
-	t_bool			has_forks;
-	t_bool			is_eating;
-	t_bool			is_thinking;
-	t_bool			is_asleep;
-	t_bool			is_dead;
+	t_status		status;
+	t_ul			time_to_die;
 	t_ul			time_since_eat;
+	t_ul			new_death_time;
 	pthread_mutex_t	philo_mutex;
 	pthread_mutex_t	eating_mutex;
 }			t_philo;
 
-typedef struct s_data
+typedef struct s_table
 {
 	t_ul			n_philos;
 	t_ul			death_time;
@@ -55,16 +64,16 @@ typedef struct s_data
 	pthread_mutex_t	*forks_mutex;
 	pthread_mutex_t	message_mutex;
 	pthread_mutex_t	dead_mutex;
-}					t_data;
+}					t_table;
 
 /*
 **	Init and error
 */
 
-int		error_exit(t_data *d, char *errmessage, t_bool clear);
-t_bool	error_and_init(t_data *d, int argc, char **argv);
-void	init_philos(t_philo *philos, int n_philos);
-t_bool	init_mutexes(t_data	*d);
+int		error_exit(t_table *t, char *errmessage, t_bool clear);
+t_bool	error_and_init(t_table *t, int argc, char **argv);
+void	init_philos(t_table *t, t_philo *philos, int n_philos);
+t_bool	init_mutexes(t_table *t);
 
 /*
 **	Helper functions
@@ -72,5 +81,8 @@ t_bool	init_mutexes(t_data	*d);
 
 int		ft_atoi(const char *numstr);
 size_t	ft_strlen(const char *str);
+void	ft_putstr_fd(char *str, int fd);
+void	ft_putnbr_ulong_fd(t_ul n, int fd);
+t_ul	get_current_time(void);
 
 #endif
