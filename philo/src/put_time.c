@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 11:01:55 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/29 11:06:39 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/29 13:55:18 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static void	ft_putchar_fd(char c, int fd)
 
 void	ft_putstr_fd(char *str, int fd)
 {
-	while (str++)
-		ft_putchar_fd(*str, fd);
+	while (*str)
+		ft_putchar_fd(*str++, fd);
 }
 
 void	ft_putnbr_ulong_fd(t_ul n, int fd)
