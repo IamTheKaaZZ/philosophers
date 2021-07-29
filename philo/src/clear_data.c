@@ -6,49 +6,47 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/28 12:16:46 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/29 13:46:17 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-static void	clear_data(t_data *d)
+void	clear_data(t_table *t)
 {
 	int	i;
 
-	if (d->forks_mutex)
+	if (t->forks_mutex)
 	{
 		i = -1;
-		while (++i < d->n_philos)
-			pthread_mutex_destroy(&d->forks_mutex[i]);
-		free(d->forks_mutex);
-		d->forks_mutex = NULL;
+		while (++i < t->n_philos)
+			pthread_mutex_destroy(&t->forks_mutex[i]);
+		free(t->forks_mutex);
+		t->forks_mutex = NULL;
 	}
-	if (d->philos)
+	if (t->philos)
 	{
 		i = -1;
-		while (++i < d->n_philos)
+		while (++i < t->n_philos)
 		{
-			pthread_mutex_destroy(&d->philos[i].eating_mutex);
-			pthread_mutex_destroy(&d->philos[i].philo_mutex);
+			pthread_mutex_destroy(&t->philos[i].philo_mutex);
 		}
-		free(d->philos);
-		d->philos = NULL;
+		free(t->philos);
+		t->philos = NULL;
 	}
-	pthread_mutex_destroy(&d->dead_mutex);
-	pthread_mutex_destroy(&d->message_mutex);
+	pthread_mutex_destroy(&t->message_mutex);
 }
 
 static int	my_perror(const char *str)
 {
 	if (str)
-		write(2, str, ft_strlen(str));
+		ft_putstr_fd((char *)str, 2);
 	return (1);
 }
 
-int	error_exit(t_data *d, char *errmessage, t_bool clear)
+int	error_exit(t_table *t, char *errmessage, t_bool clear)
 {
 	if (clear == TRUE)
-		clear_data(d);
+		clear_data(t);
 	return (my_perror(errmessage));
 }

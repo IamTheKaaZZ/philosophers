@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/29 11:42:28 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/29 13:45:51 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 static t_bool	setup_table(t_table *t, int argc, char **argv)
 {
-	t->n_philos = (long)ft_atoi(argv[1]);
-	t->death_time = (long)ft_atoi(argv[2]);
-	t->eat_time = (long)ft_atoi(argv[3]);
-	t->sleep_time = (long)ft_atoi(argv[4]);
+	t->philos = NULL;
+	t->forks_mutex = NULL;
+	t->n_philos = ft_atoi(argv[1]);
+	t->death_time = ft_atoi(argv[2]);
+	t->eat_time = ft_atoi(argv[3]);
+	t->sleep_time = ft_atoi(argv[4]);
 	if (t->n_philos < 2 || t->n_philos > 200)
 		return (1);
 	if (t->death_time < 60)
@@ -28,14 +30,12 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 		return (1);
 	if (argc == 6)
 	{
-		t->max_eat = (long)ft_atoi(argv[5]);
+		t->max_eat = ft_atoi(argv[5]);
 		if (t->max_eat < 0)
 			return (1);
 	}
 	else
 		t->max_eat = -1;
-	t->philos = NULL;
-	t->forks_mutex = NULL;
 	return (0);
 }
 
@@ -45,12 +45,12 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	{
 		if (argc < 5)
 		{
-			write(2, "Not enough arguments.\n", 23);
+			ft_putstr_fd("Not enough arguments.\n", 2);
 			return (1);
 		}
 		else if (argc > 6)
 		{
-			write(2, "Too many arguments.\n", 21);
+			ft_putstr_fd("Too many arguments.\n", 2);
 			return (1);
 		}
 	}
@@ -71,7 +71,7 @@ void	init_philos(t_table *t, t_philo *philos, int n_philos)
 	{
 		philos[i].position = i;
 		philos[i].left_fork = i;
-		if (philos[i].left_fork = n_philos - 1)
+		if (philos[i].left_fork == n_philos - 1)
 			philos[i].right_fork = 0;
 		else
 			philos[i].right_fork = i + 1;
@@ -81,8 +81,6 @@ void	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_since_eat = 0;
 		philos[i].new_death_time = 0;
 		pthread_mutex_init(&philos[i].philo_mutex, NULL);
-		pthread_mutex_init(&philos[i].eating_mutex, NULL);
-		pthread_mutex_lock(&philos[i].eating_mutex);
 	}
 }
 
@@ -91,8 +89,6 @@ t_bool	init_mutexes(t_table	*t)
 	int	i;
 
 	pthread_mutex_init(&t->message_mutex, NULL);
-	pthread_mutex_init(&t->dead_mutex, NULL);
-	pthread_mutex_lock(&t->dead_mutex);
 	t->forks_mutex =
 		(pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * t->n_philos);
 	if (!t->forks_mutex)

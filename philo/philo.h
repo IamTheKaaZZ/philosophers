@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/29 11:53:54 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/29 13:29:54 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,25 +45,25 @@ typedef struct s_philo
 	int				right_fork;
 	int				eat_count;
 	t_status		status;
+	t_ul			start_time;
 	t_ul			time_to_die;
 	t_ul			time_since_eat;
 	t_ul			new_death_time;
 	pthread_mutex_t	philo_mutex;
-	pthread_mutex_t	eating_mutex;
 }			t_philo;
 
 typedef struct s_table
 {
-	t_ul			n_philos;
+	int				n_philos;
 	t_ul			death_time;
 	t_ul			eat_time;
 	t_ul			sleep_time;
 	t_ul			max_eat;
 	t_ul			start_time;
 	t_philo			*philos;
+	t_philo			current_philo;
 	pthread_mutex_t	*forks_mutex;
 	pthread_mutex_t	message_mutex;
-	pthread_mutex_t	dead_mutex;
 }					t_table;
 
 /*
@@ -74,6 +74,7 @@ int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
 void	init_philos(t_table *t, t_philo *philos, int n_philos);
 t_bool	init_mutexes(t_table *t);
+void	clear_data(t_table *t);
 
 /*
 **	Helper functions
