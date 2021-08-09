@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/29 13:29:54 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/09 16:48:10 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ typedef struct s_philo
 	int				right_fork;
 	int				eat_count;
 	t_status		status;
-	t_ul			start_time;
 	t_ul			time_to_die;
 	t_ul			time_since_eat;
 	t_ul			new_death_time;
 	pthread_mutex_t	philo_mutex;
+	struct s_table	*table;
 }			t_philo;
 
 typedef struct s_table
@@ -61,7 +61,6 @@ typedef struct s_table
 	t_ul			max_eat;
 	t_ul			start_time;
 	t_philo			*philos;
-	t_philo			current_philo;
 	pthread_mutex_t	*forks_mutex;
 	pthread_mutex_t	message_mutex;
 }					t_table;

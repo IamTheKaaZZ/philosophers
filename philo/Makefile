@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/07/29 13:37:23 by bcosters         ###   ########.fr        #
+#    Updated: 2021/08/09 15:40:18 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ OBJS	= ${SRCS:src/%.c=obj/%.o}
 
 CC		= gcc
 RM		= rm -f
-CFLAGS	= -Wall -Wextra -Werror -pthread
+CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=address
 
 # -*- The Rules -*-
 
