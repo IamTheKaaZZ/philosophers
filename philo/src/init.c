@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/09 17:03:43 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 13:10:38 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,21 +70,31 @@ void	init_philos(t_table *t, t_philo *philos, int n_philos)
 	while (++i < n_philos)
 	{
 		philos[i].position = i;
-		philos[i].left_fork = i;
-		if (philos[i].left_fork == n_philos - 1)
-			philos[i].right_fork = 0;
-		else
-			philos[i].right_fork = i + 1;
 		philos[i].eat_count = 0;
 		philos[i].status = THINKING;
+		philos[i].time_to_eat = t->eat_time;
+		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
-		philos[i].time_since_eat = 0;
-		philos[i].new_death_time = 0;
+		philos[i].time_ate = 0;
+		philos[i].new_death_time = t->death_time;
+		philos[i].left_fork_state = &t->taken_forks[i];
+		philos[i].left_fork_m = &t->forks_mutex[i];
+		if (i == n_philos - 1)
+		{
+			philos[i].right_fork_state = &t->taken_forks[0];
+			philos[i].right_fork_m = &t->forks_mutex[0];
+		}
+		else
+		{
+			philos[i].right_fork_state = &t->taken_forks[i + 1];
+			philos[i].right_fork_m = &t->forks_mutex[i + 1];
+		}
+		philos[i].message_m = &t->message_mutex;
 		pthread_mutex_init(&philos[i].philo_mutex, NULL);
 	}
 }
 
-t_bool	init_mutexes(t_table	*t)
+t_bool	init_mutexes(t_table *t)
 {
 	int	i;
 
@@ -95,6 +105,13 @@ t_bool	init_mutexes(t_table	*t)
 		return (1);
 	i = -1;
 	while (++i < t->n_philos)
-		pthread_mutex_init(&t->forks_mutex[i], NULL);
+	{
+		if (pthread_mutex_init(&t->forks_mutex[i], NULL) != 0)
+			printf("error in initialization of fork mutexes %d\n", i);
+	}
+	t->taken_forks = (t_bool *)malloc(sizeof(t_bool) * t->n_philos);
+	if (!t->taken_forks)
+		return (1);
+	memset(t->taken_forks, FALSE, sizeof(t_bool) * t->n_philos);
 	return (0);
 }

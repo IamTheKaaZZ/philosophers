@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 11:01:55 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/29 13:55:18 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 11:52:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,18 @@ void	ft_putstr_fd(char *str, int fd)
 		ft_putchar_fd(*str++, fd);
 }
 
-void	ft_putnbr_ulong_fd(t_ul n, int fd)
+void	ft_putnbr_ulong_fd(t_ll n, int fd)
 {
-	if (n != ULONG_MAX)
+	if ((t_ul)n != ULONG_MAX)
 	{
 		if (n < 10)
 		{
-			ft_putchar_fd(ul_to_char(n), fd);
+			ft_putchar_fd(ul_to_char((t_ul)n), fd);
 		}
 		if (n >= 10)
 		{
-			ft_putnbr_ulong_fd(n / 10, fd);
-			ft_putchar_fd(ul_to_char(n), fd);
+			ft_putnbr_ulong_fd((t_ul)n / 10, fd);
+			ft_putchar_fd(ul_to_char((t_ul)n), fd);
 		}
 	}
 	else
