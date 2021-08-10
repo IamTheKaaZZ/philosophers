@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 15:43:36 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 16:45:26 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_bool	check_death(t_philo *p)
 {
 		pthread_mutex_lock(&p->philo_mutex);
-		if (p->status != EATING && get_current_time() > p->new_death_time)
+		if (p->status != FULL_END && get_current_time() > p->new_death_time)
 		{
 			p->status = DEAD;
 			message_printer(p);
@@ -66,9 +66,18 @@ void	take_forks(t_philo *philo)
 
 void	eating(t_philo *philo)
 {
+	t_ll	eattime;
+
+	eattime = philo->time_to_eat * ONE_MS;
 	philo->status = EATING;
 	message_printer(philo);
-	usleep(philo->time_to_eat * ONE_MS);
+	while (eattime)
+	{
+		if (check_death(philo))
+			return ;
+		usleep(100);
+		eattime -= 100;
+	}
 	philo->time_ate = get_current_time();
 	philo->new_death_time =
 		philo->time_ate + philo->time_to_die;
