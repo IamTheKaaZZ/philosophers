@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 11:51:50 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 14:19:59 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef enum s_status
 typedef struct s_philo
 {
 	pthread_t		thread;
-	int				position;
+	int				id;
 	int				eat_count;
 	t_status		status;
 	t_ll			time_to_eat;
@@ -50,8 +50,8 @@ typedef struct s_philo
 	t_ll			start_time;
 	t_ll			time_ate;
 	t_ll			new_death_time;
-	t_bool			*left_fork_state;
-	t_bool			*right_fork_state;
+	t_bool			*left_fork_taken;
+	t_bool			*right_fork_taken;
 	pthread_mutex_t	*left_fork_m;
 	pthread_mutex_t	*right_fork_m;
 	pthread_mutex_t	philo_mutex;
@@ -67,6 +67,7 @@ typedef struct s_table
 	t_ll			max_eat;
 	t_ll			start_time;
 	t_philo			*philos;
+	t_bool			somebody_died;
 	t_bool			*taken_forks;
 	pthread_mutex_t	*forks_mutex;
 	pthread_mutex_t	message_mutex;
@@ -88,8 +89,16 @@ void	clear_data(t_table *t);
 
 int		ft_atoi(const char *numstr);
 size_t	ft_strlen(const char *str);
-void	ft_putstr_fd(char *str, int fd);
-void	ft_putnbr_ulong_fd(t_ll n, int fd);
 t_ll	get_current_time(void);
+
+/*
+**	Philosopher functions
+*/
+
+void	message_printer(t_philo *philo);
+t_bool	check_death(t_philo *p);
+void	take_forks(t_philo *philo);
+void	eating(t_philo *philo);
+void	sleeping(t_philo *philo);
 
 #endif

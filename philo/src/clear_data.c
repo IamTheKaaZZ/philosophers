@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 13:08:31 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 14:23:14 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	clear_data(t_table *t)
 static int	my_perror(const char *str)
 {
 	if (str)
-		ft_putstr_fd((char *)str, 2);
+		printf("ERROR: %s", str);
 	return (1);
 }
 
