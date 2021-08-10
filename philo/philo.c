@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 14:54:07 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 15:40:22 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	death_end_tracker(t_table *table)
 			if (table->philos[i].status == DEAD)
 			{
 				table->somebody_died = TRUE;
-				return (1) ;
+				return (1);
 			}
 		}
 	}

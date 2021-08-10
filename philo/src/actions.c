@@ -6,25 +6,11 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 14:32:17 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 15:43:36 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-t_bool	check_full(t_philo *p)
-{
-		pthread_mutex_lock(&p->philo_mutex);
-		if (p->status != EATING && get_current_time() > p->new_death_time)
-		{
-			p->status = FULL_END;
-			message_printer(p);
-			pthread_mutex_unlock(&p->philo_mutex);
-			return(TRUE);
-		}
-		pthread_mutex_unlock(&p->philo_mutex);
-		return(FALSE);
-}
 
 t_bool	check_death(t_philo *p)
 {

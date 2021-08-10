@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 14:24:24 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 15:38:47 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ void	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].time_ate = 0;
-		philos[i].new_death_time = t->death_time;
+		philos[i].new_death_time = get_current_time() + t->death_time;
+		philos[i].somebody_is_dead = &t->somebody_died;
 		philos[i].left_fork_taken = &t->taken_forks[i];
 		philos[i].left_fork_m = &t->forks_mutex[i];
 		if (i == n_philos - 1)

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 14:19:59 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/10 15:48:03 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <sys/time.h>
 # include <string.h>
 # include <limits.h>
+# include "ft_ansi.h"
 # define TRUE 1
 # define FALSE 0
 # define ONE_MS 1000
@@ -52,6 +53,7 @@ typedef struct s_philo
 	t_ll			new_death_time;
 	t_bool			*left_fork_taken;
 	t_bool			*right_fork_taken;
+	t_bool			*somebody_is_dead;
 	pthread_mutex_t	*left_fork_m;
 	pthread_mutex_t	*right_fork_m;
 	pthread_mutex_t	philo_mutex;
