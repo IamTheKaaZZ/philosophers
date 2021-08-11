@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 12:55:54 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/11 15:19:18 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	t->death_time = ft_atoi(argv[2]);
 	t->eat_time = ft_atoi(argv[3]);
 	t->sleep_time = ft_atoi(argv[4]);
-	if (t->n_philos < 2 || t->n_philos > 200)
+	if (t->n_philos < 1 || t->n_philos > 200)
 		return (1);
 	if (t->death_time < 60)
 		return (1);
@@ -106,7 +106,7 @@ t_bool	init_mutexes(t_table *t)
 	while (++i < t->n_philos)
 	{
 		if (pthread_mutex_init(&t->forks_mutex[i], NULL) != 0)
-			printf("error in initialization of fork mutexes %d\n", i);
+			printf("Error in initialization of fork mutex %d\n", i);
 	}
 	t->taken_forks = (t_bool *)malloc(sizeof(t_bool) * t->n_philos);
 	if (!t->taken_forks)

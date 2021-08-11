@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 12:55:23 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/11 14:38:00 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	start_threads(t_table *t)
 {
 	int	i;
 
+	get_time_elapsed();
 	i = -1;
 	while (++i < t->n_philos)
 	{
