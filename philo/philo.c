@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/10 16:50:47 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/11 12:55:23 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	*philosophy_routine(void *philo)
 	t_philo	*p;
 
 	p = (t_philo *)philo;
-	while (TRUE)
+	while (p->eat_count != 0)
 	{
 		take_forks(p);
 		if (p->status == DEAD || p->status == FULL_END)
@@ -40,12 +40,10 @@ int	start_threads(t_table *t)
 {
 	int	i;
 
-	t->start_time = get_current_time();
 	i = -1;
 	while (++i < t->n_philos)
 	{
 		t->philos[i].id = i;
-		t->philos[i].start_time = t->start_time;
 		if (pthread_create(&t->philos[i].thread,
 				NULL,
 				philosophy_routine,
