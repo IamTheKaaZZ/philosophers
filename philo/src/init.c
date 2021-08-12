@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 15:19:18 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 11:27:29 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,23 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	return (0);
 }
 
-void	init_philos(t_table *t, t_philo *philos, int n_philos)
+static void	assign_forks(t_table *t, t_philo *philo)
+{
+	philo->left_fork_taken = &t->taken_forks[philo->id];
+	philo->left_fork_m = &t->forks_mutex[philo->id];
+	if (philo->id == t->n_philos - 1)
+	{
+		philo->right_fork_taken = &t->taken_forks[0];
+		philo->right_fork_m = &t->forks_mutex[0];
+	}
+	else
+	{
+		philo->right_fork_taken = &t->taken_forks[philo->id + 1];
+		philo->right_fork_m = &t->forks_mutex[philo->id + 1];
+	}
+}
+
+t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 {
 	int	i;
 
@@ -75,38 +91,29 @@ void	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].new_death_time = t->death_time;
+		assign_forks(t, &philos[i]);
 		philos[i].somebody_is_dead = &t->somebody_died;
-		philos[i].left_fork_taken = &t->taken_forks[i];
-		philos[i].left_fork_m = &t->forks_mutex[i];
-		if (i == n_philos - 1)
-		{
-			philos[i].right_fork_taken = &t->taken_forks[0];
-			philos[i].right_fork_m = &t->forks_mutex[0];
-		}
-		else
-		{
-			philos[i].right_fork_taken = &t->taken_forks[i + 1];
-			philos[i].right_fork_m = &t->forks_mutex[i + 1];
-		}
 		philos[i].message_m = &t->message_mutex;
-		pthread_mutex_init(&philos[i].philo_mutex, NULL);
+		if (pthread_mutex_init(&philos[i].philo_mutex, NULL) != 0)
+			return (1);
 	}
+	return (0);
 }
 
 t_bool	init_mutexes(t_table *t)
 {
 	int	i;
 
-	pthread_mutex_init(&t->message_mutex, NULL);
-	t->forks_mutex =
-		(pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * t->n_philos);
+	if (pthread_mutex_init(&t->message_mutex, NULL) != 0)
+		return (1);
+	t->forks_mutex = malloc(sizeof(pthread_mutex_t) * t->n_philos);
 	if (!t->forks_mutex)
 		return (1);
 	i = -1;
 	while (++i < t->n_philos)
 	{
 		if (pthread_mutex_init(&t->forks_mutex[i], NULL) != 0)
-			printf("Error in initialization of fork mutex %d\n", i);
+			return (1);
 	}
 	t->taken_forks = (t_bool *)malloc(sizeof(t_bool) * t->n_philos);
 	if (!t->taken_forks)

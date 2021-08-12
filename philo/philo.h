@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 12:55:48 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 11:22:26 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork_m;
 	pthread_mutex_t	philo_mutex;
 	pthread_mutex_t	*message_m;
-}			t_philo;
+}					t_philo;
 
 typedef struct s_table
 {
@@ -78,7 +78,7 @@ typedef struct s_table
 
 int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
-void	init_philos(t_table *t, t_philo *philos, int n_philos);
+t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);
 t_bool	init_mutexes(t_table *t);
 void	clear_data(t_table *t);
 
@@ -87,7 +87,6 @@ void	clear_data(t_table *t);
 */
 
 int		ft_atoi(const char *numstr);
-size_t	ft_strlen(const char *str);
 t_ll	get_time_elapsed(void);
 
 /*

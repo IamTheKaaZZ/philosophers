@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 14:38:00 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 11:29:39 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	start_threads(t_table *t)
 				NULL,
 				philosophy_routine,
 				(void *)&t->philos[i])
-				!= 0)
+			!= 0)
 			return (1);
 	}
 	i = -1;
@@ -66,15 +66,10 @@ int	main(int argc, char **argv)
 		return (error_exit(&t, "Data init error.\n", TRUE));
 	if (init_mutexes(&t))
 		return (error_exit(&t, "Mutex init error.\n", TRUE));
-	init_philos(&t, t.philos, t.n_philos);
+	if (init_philos(&t, t.philos, t.n_philos))
+		return (error_exit(&t, "Philosophers init error.\n", TRUE));
 	if (start_threads(&t))
-		return (error_exit(&t, "Thread error.\n", TRUE));
-	//main thread should check for deaths and if they are all full
-	// if (death_end_tracker(&t))
-	// {
-	// 	clear_data(&t);
-	// 	return (0);
-	// }
+		return (error_exit(&t, "Thread creation error.\n", TRUE));
 	clear_data(&t);
 	return (0);
 }

@@ -6,26 +6,45 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 15:42:28 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 11:11:50 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-t_bool	check_death(t_philo *p)
+static t_bool	one_philo_case(t_philo *philo)
 {
-		if (p->status != FULL_END && get_time_elapsed() > p->new_death_time)
+	if (philo->left_fork_m == philo->right_fork_m)
+	{
+		philo->status = TOOK_FORK;
+		message_printer(philo);
+		while (TRUE)
 		{
-			p->status = DEAD;
-			message_printer(p);
-			return(TRUE);
+			if (check_death(philo))
+				return (TRUE);
 		}
-		return(FALSE);
+	}
+	return (FALSE);
+}
+
+static void	check_available_forks(t_philo *philo, t_bool *locked)
+{
+	pthread_mutex_lock(philo->right_fork_m);
+	pthread_mutex_lock(philo->left_fork_m);
+	if (*philo->left_fork_taken == FALSE
+		&& *philo->right_fork_taken == FALSE)
+	{
+		*philo->left_fork_taken = TRUE;
+		*philo->right_fork_taken = TRUE;
+		*locked = TRUE;
+	}
+	pthread_mutex_unlock(philo->left_fork_m);
+	pthread_mutex_unlock(philo->right_fork_m);
 }
 
 /*
 ** only take forks when both are available!
-**	the fork_taken variables are shared between philos
+	the fork_taken variables are shared between philos
 **	=> they need to be locked and unlocked when something happens to them
 */
 
@@ -36,30 +55,11 @@ void	take_forks(t_philo *philo)
 	locked = FALSE;
 	while (!locked)
 	{
-		//the one philo edge case
-		if (philo->left_fork_m == philo->right_fork_m)
-		{
-			philo->status = TOOK_FORK;
-			message_printer(philo);
-			while (TRUE)
-			{
-				if (check_death(philo))
-					return ;
-			}
-		}
+		if (one_philo_case(philo))
+			return ;
 		else
 		{
-			pthread_mutex_lock(philo->left_fork_m);
-			pthread_mutex_lock(philo->right_fork_m);
-			if (*philo->left_fork_taken == FALSE
-				&& *philo->right_fork_taken == FALSE)
-			{
-				*philo->left_fork_taken = TRUE;
-				*philo->right_fork_taken = TRUE;
-				locked = TRUE;
-			}
-			pthread_mutex_unlock(philo->left_fork_m);
-			pthread_mutex_unlock(philo->right_fork_m);
+			check_available_forks(philo, &locked);
 		}
 		if (locked)
 		{
@@ -82,8 +82,7 @@ void	eating(t_philo *philo)
 	philo->status = EATING;
 	message_printer(philo);
 	time_ate = get_time_elapsed();
-	philo->new_death_time =
-		time_ate + philo->time_to_die;
+	philo->new_death_time = time_ate + philo->time_to_die;
 	philo->eat_count--;
 	while (get_time_elapsed() < time_ate + philo->time_to_eat)
 	{
