@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 11:22:26 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 15:27:50 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	t_status		status;
+	t_ll			start_time;
 	t_ll			time_to_eat;
 	t_ll			time_to_sleep;
 	t_ll			time_to_die;
@@ -88,6 +89,7 @@ void	clear_data(t_table *t);
 
 int		ft_atoi(const char *numstr);
 t_ll	get_time_elapsed(void);
+t_ll	get_current_time(t_ll start_time);
 
 /*
 **	Philosopher functions
@@ -96,6 +98,7 @@ t_ll	get_time_elapsed(void);
 void	message_printer(t_philo *philo);
 t_bool	check_death(t_philo *p);
 void	take_forks(t_philo *philo);
+void	put_fork_down(pthread_mutex_t *fork, t_bool *taken);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
 

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 12:40:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 15:01:16 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 15:44:38 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,12 @@ t_ll	get_time_elapsed(void)
 	}
 	return ((tv.tv_sec - start_sec) * 1000LL
 		+ (tv.tv_usec - start_usec) / 1000);
+}
+
+t_ll	get_current_time(t_ll start_time)
+{
+	static struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000) - start_time);
 }

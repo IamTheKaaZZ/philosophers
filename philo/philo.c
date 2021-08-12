@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 11:29:39 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 15:44:55 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,15 @@ void	*philosophy_routine(void *philo)
 
 int	start_threads(t_table *t)
 {
-	int	i;
+	int		i;
+	t_ll	start_time;
 
-	get_time_elapsed();
+	start_time = get_current_time(0);
 	i = -1;
 	while (++i < t->n_philos)
 	{
 		t->philos[i].id = i;
+		t->philos[i].start_time = start_time;
 		if (pthread_create(&t->philos[i].thread,
 				NULL,
 				philosophy_routine,

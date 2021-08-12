@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 12:46:20 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 14:07:09 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].id = i;
 		philos[i].eat_count = t->max_eat;
 		philos[i].status = THINKING;
+		philos[i].start_time = 0;
 		philos[i].time_to_eat = t->eat_time;
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
