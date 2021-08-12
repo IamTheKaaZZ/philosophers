@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 11:11:50 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 12:44:30 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,7 @@ void	take_forks(t_philo *philo)
 		if (one_philo_case(philo))
 			return ;
 		else
-		{
 			check_available_forks(philo, &locked);
-		}
 		if (locked)
 		{
 			philo->status = TOOK_FORK;
@@ -84,13 +82,14 @@ void	eating(t_philo *philo)
 	time_ate = get_time_elapsed();
 	philo->new_death_time = time_ate + philo->time_to_die;
 	philo->eat_count--;
+	usleep(philo->time_to_eat - philo->time_to_eat / 10);
 	while (get_time_elapsed() < time_ate + philo->time_to_eat)
 	{
 		if (get_time_elapsed() >= time_ate + philo->time_to_eat)
 			break ;
 		if (check_death(philo))
 			return ;
-		usleep(100);
+		// usleep(100);
 	}
 }
 
@@ -112,12 +111,13 @@ void	sleeping(t_philo *philo)
 	pthread_mutex_unlock(philo->left_fork_m);
 	pthread_mutex_unlock(philo->right_fork_m);
 	sleep_start = get_time_elapsed();
+	usleep(philo->time_to_sleep - philo->time_to_sleep / 10);
 	while (get_time_elapsed() < sleep_start + philo->time_to_sleep)
 	{
 		if (get_time_elapsed() >= sleep_start + philo->time_to_sleep)
 			break ;
 		if (check_death(philo))
 			return ;
-		usleep(100);
+		// usleep(100);
 	}
 }

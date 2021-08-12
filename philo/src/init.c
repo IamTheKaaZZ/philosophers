@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 11:27:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 12:46:20 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	t->sleep_time = ft_atoi(argv[4]);
 	if (t->n_philos < 1 || t->n_philos > 200)
 		return (1);
-	if (t->death_time < 60)
+	if (t->death_time < 0)
 		return (1);
-	if (t->eat_time < 60)
+	if (t->eat_time < 0)
 		return (1);
-	if (t->sleep_time < 60)
+	if (t->sleep_time < 0)
 		return (1);
 	if (argc == 6)
 	{

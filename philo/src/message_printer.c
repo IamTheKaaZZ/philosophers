@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/11 12:39:31 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/12 11:52:34 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 void	message_printer(t_philo *philo)
 {
 	static char	action_str[5][100] = {
-		"\033[34mhas taken a fork\033[0m",
-		"\033[32;1mis eating\033[0m",
-		"\033[35mis sleeping\033[0m",
-		"\033[36mis thinking\033[0m",
-		"\033[31;1mdied\033[0m"
+		"has taken a fork",
+		"is eating",
+		"is sleeping",
+		"is thinking",
+		"died"
 	};
 
 	pthread_mutex_lock(philo->message_m);
@@ -27,7 +27,7 @@ void	message_printer(t_philo *philo)
 		philo->status = DEAD;
 	else
 	{
-		printf("\033[45;1m%lld ms:\033[33;1m Philosoper %d\033[0m %s\n",
+		printf("%lld %d %s\n",
 			get_time_elapsed(),
 			philo->id + 1,
 			action_str[philo->status]
