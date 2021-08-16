@@ -6,16 +6,16 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:42:31 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 11:58:52 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 void	message_printer(t_philo *philo)
 {
 	static char	action_str[5][100] = {
-		"\033[32mhas taken a fork.\033[0m",
+		"\033[32mhas taken a fork from the middle.\033[0m",
 		"\033[36mis eating.\033[0m",
 		"\033[34;1mis sleeping.\033[0m",
 		"\033[35mis thinking.\033[0m",

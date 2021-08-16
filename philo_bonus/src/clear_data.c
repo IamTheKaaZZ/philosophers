@@ -6,26 +6,26 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:12:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 11:57:36 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 void	clear_data(t_table *t)
 {
 	int	i;
 
-	if (t->taken_forks)
-		free(t->taken_forks);
-	if (t->forks_mutex)
-	{
-		i = -1;
-		while (++i < t->n_philos)
-			pthread_mutex_destroy(&t->forks_mutex[i]);
-		free(t->forks_mutex);
-		t->forks_mutex = NULL;
-	}
+	// if (t->taken_forks)
+	// 	free(t->taken_forks);
+	// if (t->forks_mutex)
+	// {
+	// 	i = -1;
+	// 	while (++i < t->n_philos)
+	// 		pthread_mutex_destroy(&t->forks_mutex[i]);
+	// 	free(t->forks_mutex);
+	// 	t->forks_mutex = NULL;
+	// }
 	if (t->philos)
 	{
 		free(t->philos);

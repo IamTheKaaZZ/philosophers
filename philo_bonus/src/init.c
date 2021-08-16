@@ -6,11 +6,11 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:12:01 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 11:58:02 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 static t_bool	setup_table(t_table *t, int argc, char **argv)
 {
@@ -99,9 +99,10 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 	return (0);
 }
 
-t_bool	init_mutexes(t_table *t)
+t_bool	init_semaphores(t_table *t)
 {
 	int	i;
+
 
 	if (pthread_mutex_init(&t->message_mutex, NULL) != 0)
 		return (1);
