@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 15:51:52 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 17:01:12 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,7 @@ void	take_forks(t_philo *philo)
 	has_two_forks = FALSE;
 	while (!has_two_forks)
 	{
-		if (check_death(philo))
-			return ;
-		if (sem_wait(philo->lock_sem) < 0)
-			continue ;
+		sem_wait(philo->lock_sem);
 		i = -1;
 		while (++i < 2)
 		{
@@ -89,6 +86,8 @@ void	take_forks(t_philo *philo)
 		else
 			sem_post(philo->forks_sem);
 		sem_post(philo->lock_sem);
+		if (check_death(philo))
+			return ;
 	}
 	philo->status = TOOK_FORK;
 	message_printer(philo);

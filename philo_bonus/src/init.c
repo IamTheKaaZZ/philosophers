@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 15:58:38 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 17:17:08 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 static t_bool	open_and_close(sem_t *semaphore, char *name, int value)
 {
 	//
-	printf("name = %s\n", name);
-	semaphore = sem_open(name, O_CREAT, 0600, value);
+	// printf("name = %s\n", name);
+	semaphore = sem_open(name, O_CREAT | O_EXCL, 0600, value);
 	if (semaphore == SEM_FAILED)
 		return (my_perror("Opening named semaphore.\n"));
 	if (sem_close(semaphore) < 0)
@@ -104,6 +104,9 @@ static t_bool	open_and_close(sem_t *semaphore, char *name, int value)
 
 t_bool	init_semaphores(t_table *t)
 {
+	sem_unlink(LOCK_SEMA);
+	sem_unlink(MESSAGE_SEMA);
+	sem_unlink(FORK_SEMA);
 	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
 	if (open_and_close(t->lock_sem, LOCK_SEMA, 1))
