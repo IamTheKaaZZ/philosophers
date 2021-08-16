@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:58:02 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:58:38 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	t->eat_time = ft_atoi(argv[3]);
 	t->sleep_time = ft_atoi(argv[4]);
 	if (t->n_philos < 1 || t->n_philos > 200)
-		return (1);
+		return (my_perror("Too little or too many Philosophers.\n"));
 	if (t->death_time < 0)
-		return (1);
+		return (my_perror("(Death time < 0) No immortality.\n"));
 	if (t->eat_time < 0)
-		return (1);
+		return (my_perror("(Eat time < 0) No time travelling.\n"));
 	if (t->sleep_time < 0)
-		return (1);
+		return (my_perror("(Sleep time < 0) Philosopher != Student.\n"));
 	if (argc == 6)
 	{
 		t->max_eat = ft_atoi(argv[5]);
 		if (t->max_eat < 0)
-			return (1);
+			return (my_perror("(Must eat < 0) (┛ಠ_ಠ)┛彡┻━┻ No spaghetti.\n"));
 	}
 	else
 		t->max_eat = -1;
@@ -43,38 +43,16 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	if (argc != 6)
 	{
 		if (argc < 5)
-		{
-			printf("Not enough arguments.\n");
-			return (1);
-		}
+			return (my_perror("Not enough arguments.\n"));
 		else if (argc > 6)
-		{
-			printf("Too many arguments.\n");
-			return (1);
-		}
+			return (my_perror("Too many arguments.\n"));
 	}
 	if (setup_table(t, argc, argv))
-		return (1);
+		return (my_perror("Given arguments are invalid.\n"));
 	t->philos = (t_philo *)malloc(t->n_philos * sizeof(t_philo));
 	if (!t->philos)
-		return (1);
+		return (my_perror("Malloc fail.\n"));
 	return (0);
-}
-
-static void	assign_forks(t_table *t, t_philo *philo)
-{
-	philo->left_fork_taken = &t->taken_forks[philo->id];
-	philo->left_fork_m = &t->forks_mutex[philo->id];
-	if (philo->id == t->n_philos - 1)
-	{
-		philo->right_fork_taken = &t->taken_forks[0];
-		philo->right_fork_m = &t->forks_mutex[0];
-	}
-	else
-	{
-		philo->right_fork_taken = &t->taken_forks[philo->id + 1];
-		philo->right_fork_m = &t->forks_mutex[philo->id + 1];
-	}
 }
 
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
@@ -92,32 +70,45 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].new_death_time = t->death_time;
-		assign_forks(t, &philos[i]);
 		philos[i].somebody_is_dead = &t->somebody_died;
-		philos[i].message_m = &t->message_mutex;
+	}
+	return (0);
+}
+
+/*
+	~~	The following functions open the shared named semaphores	~~
+	-> Named semaphores are shared in memory by:
+		the parent and any child processes
+	The semaphores will not be used by the parent:
+	->	The parent opens them for the child processes to use later.
+		-> Checks for sem_open failure
+	-> The parent then closes the semaphore for itself since it doesn't need it
+		-> Checks for sem_close failure
+		-> Unlinks the semaphore completely in case of failure
+*/
+
+static t_bool	open_and_close(sem_t *semaphore, char *name, int value)
+{
+	//
+	printf("name = %s\n", name);
+	semaphore = sem_open(name, O_CREAT, 0600, value);
+	if (semaphore == SEM_FAILED)
+		return (my_perror("Opening named semaphore.\n"));
+	if (sem_close(semaphore) < 0)
+	{
+		sem_unlink(name);
+		return (my_perror("Closing named semaphore.\n"));
 	}
 	return (0);
 }
 
 t_bool	init_semaphores(t_table *t)
 {
-	int	i;
-
-
-	if (pthread_mutex_init(&t->message_mutex, NULL) != 0)
+	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
-	t->forks_mutex = malloc(sizeof(pthread_mutex_t) * t->n_philos);
-	if (!t->forks_mutex)
+	if (open_and_close(t->lock_sem, LOCK_SEMA, 1))
 		return (1);
-	i = -1;
-	while (++i < t->n_philos)
-	{
-		if (pthread_mutex_init(&t->forks_mutex[i], NULL) != 0)
-			return (1);
-	}
-	t->taken_forks = (t_bool *)malloc(sizeof(t_bool) * t->n_philos);
-	if (!t->taken_forks)
+	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos))
 		return (1);
-	memset(t->taken_forks, FALSE, sizeof(t_bool) * t->n_philos);
 	return (0);
 }

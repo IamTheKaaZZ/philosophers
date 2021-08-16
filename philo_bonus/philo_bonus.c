@@ -1,22 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 15:44:55 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:54:29 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
-void	*philosophy_routine(void *philo)
+t_bool	unlink_semaphore(const char *name)
 {
-	t_philo	*p;
+	if (sem_unlink(name) < 0)
+		return (my_perror("sem_unlink failure.\n"));
+	return (0);
+}
 
-	p = (t_philo *)philo;
+void	open_semaphores(t_philo *p)
+{
+	p->lock_sem = sem_open(LOCK_SEMA, O_RDWR);
+	if (p->lock_sem == SEM_FAILED)
+		exit(unlink_semaphore(LOCK_SEMA) + 1);
+	p->message_sem = sem_open(MESSAGE_SEMA, O_RDWR);
+	if (p->lock_sem == SEM_FAILED)
+		exit(unlink_semaphore(MESSAGE_SEMA) + 1);
+	p->forks_sem = sem_open(FORK_SEMA, O_RDWR);
+	if (p->forks_sem == SEM_FAILED)
+		exit(unlink_semaphore(FORK_SEMA) + 1);
+}
+
+void	philosophy_routine(t_philo *p)
+{
+	open_semaphores(p);
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
@@ -33,10 +51,13 @@ void	*philosophy_routine(void *philo)
 		if (p->status == DEAD || p->status == FULL_END)
 			break ;
 	}
-	return (NULL);
+	if (sem_close(p->message_sem) < 0 || sem_close(p->lock_sem) < 0
+		|| sem_close(p->forks_sem) < 0)
+		exit(my_perror("Closing semaphores failure.\n"));
+	exit(EXIT_SUCCESS);
 }
 
-int	start_threads(t_table *t)
+int	start_processes(t_table *t)
 {
 	int		i;
 	t_ll	start_time;
@@ -47,16 +68,21 @@ int	start_threads(t_table *t)
 	{
 		t->philos[i].id = i;
 		t->philos[i].start_time = start_time;
-		if (pthread_create(&t->philos[i].thread,
-				NULL,
-				philosophy_routine,
-				(void *)&t->philos[i])
-			!= 0)
-			return (1);
+		t->philos[i].pid = fork();
+		if (t->philos[i].pid == -1)
+			return (my_perror("Forking failure.\n"));
+		if (t->philos[i].pid == 0)
+			philosophy_routine(&t->philos[i]);
 	}
 	i = -1;
 	while (++i < t->n_philos)
-		pthread_join(t->philos[i].thread, NULL);
+	{
+		if (waitpid(t->philos[i].pid, NULL, 0) < 0)
+			return (my_perror("Waitpid failure.\n"));
+	}
+	if (unlink_semaphore(MESSAGE_SEMA) || unlink_semaphore(LOCK_SEMA)
+		|| unlink_semaphore(FORK_SEMA))
+		return (1);
 	return (0);
 }
 
@@ -65,13 +91,13 @@ int	main(int argc, char **argv)
 	t_table	t;
 
 	if (error_and_init(&t, argc, argv))
-		return (error_exit(&t, "Data init error.\n", TRUE));
-	if (init_mutexes(&t))
-		return (error_exit(&t, "Mutex init error.\n", TRUE));
+		error_exit(&t, "Data init error.\n", TRUE);
+	if (init_semaphores(&t))
+		error_exit(&t, "Semaphore init error.\n", TRUE);
 	if (init_philos(&t, t.philos, t.n_philos))
-		return (error_exit(&t, "Philosophers init error.\n", TRUE));
-	if (start_threads(&t))
-		return (error_exit(&t, "Thread creation error.\n", TRUE));
+		error_exit(&t, "Philosophers init error.\n", TRUE);
+	if (start_processes(&t))
+		error_exit(&t, "Process forking error.\n", TRUE);
 	clear_data(&t);
-	return (0);
+	exit(EXIT_SUCCESS);
 }

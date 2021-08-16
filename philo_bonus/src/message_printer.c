@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:58:52 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:38:15 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	message_printer(t_philo *philo)
 		"\033[31;1mdied.\033[0m"
 	};
 
-	pthread_mutex_lock(philo->message_m);
+	sem_wait(philo->message_sem);
 	if (*philo->somebody_is_dead)
 		philo->status = DEAD;
 	else
@@ -35,5 +35,5 @@ void	message_printer(t_philo *philo)
 	}
 	if (philo->status == DEAD && !*philo->somebody_is_dead)
 		*philo->somebody_is_dead = TRUE;
-	pthread_mutex_unlock(philo->message_m);
+	sem_post(philo->message_sem);
 }

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:11:17 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 14:37:55 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_table
 **	Init and error
 */
 
+int		my_perror(const char *str);
 int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);

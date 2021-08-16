@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:12:01 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 14:50:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	t->eat_time = ft_atoi(argv[3]);
 	t->sleep_time = ft_atoi(argv[4]);
 	if (t->n_philos < 1 || t->n_philos > 200)
-		return (1);
+		return (my_perror("Too little or too many Philosophers.\n"));
 	if (t->death_time < 0)
-		return (1);
+		return (my_perror("(Death time < 0) No immortality.\n"));
 	if (t->eat_time < 0)
-		return (1);
+		return (my_perror("(Eat time < 0) No time travelling.\n"));
 	if (t->sleep_time < 0)
-		return (1);
+		return (my_perror("(Sleep time < 0) Philosopher != student.\n"));
 	if (argc == 6)
 	{
 		t->max_eat = ft_atoi(argv[5]);
 		if (t->max_eat < 0)
-			return (1);
+			return (my_perror("(Must eat < 0) (┛ಠ_ಠ)┛彡┻━┻ No spaghetti.\n"));
 	}
 	else
 		t->max_eat = -1;
@@ -43,21 +43,15 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	if (argc != 6)
 	{
 		if (argc < 5)
-		{
-			printf("Not enough arguments.\n");
-			return (1);
-		}
+			return (my_perror("Not enough arguments.\n"));
 		else if (argc > 6)
-		{
-			printf("Too many arguments.\n");
-			return (1);
-		}
+			return (my_perror("Too many arguments.\n"));
 	}
 	if (setup_table(t, argc, argv))
-		return (1);
+		return (my_perror("Given arguments are invalid.\n"));
 	t->philos = (t_philo *)malloc(t->n_philos * sizeof(t_philo));
 	if (!t->philos)
-		return (1);
+		return (my_perror("Malloc fail.\n"));
 	return (0);
 }
 
@@ -104,19 +98,19 @@ t_bool	init_mutexes(t_table *t)
 	int	i;
 
 	if (pthread_mutex_init(&t->message_mutex, NULL) != 0)
-		return (1);
+		return (my_perror("Mutex init fail.\n"));
 	t->forks_mutex = malloc(sizeof(pthread_mutex_t) * t->n_philos);
 	if (!t->forks_mutex)
-		return (1);
+		return (my_perror("Malloc fail.\n"));
 	i = -1;
 	while (++i < t->n_philos)
 	{
 		if (pthread_mutex_init(&t->forks_mutex[i], NULL) != 0)
-			return (1);
+			return (my_perror("Mutex init fail.\n"));
 	}
 	t->taken_forks = (t_bool *)malloc(sizeof(t_bool) * t->n_philos);
 	if (!t->taken_forks)
-		return (1);
+		return (my_perror("Malloc fail.\n"));
 	memset(t->taken_forks, FALSE, sizeof(t_bool) * t->n_philos);
 	return (0);
 }

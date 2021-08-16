@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:54:19 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:16:43 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef enum s_status
 
 typedef struct s_philo
 {
-	int			pid;
+	pid_t		pid;
 	int			id;
 	int			eat_count;
 	t_status	status;
@@ -75,17 +75,19 @@ typedef struct s_table
 	t_bool		somebody_died;
 	// t_bool		*taken_forks;
 	sem_t		*forks_sem;
-	sem_t		message_sem;
+	sem_t		*message_sem;
+	sem_t		*lock_sem;
 }					t_table;
 
 /*
 **	Init and error
 */
 
+int		my_perror(const char *str);
 int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);
-t_bool	init_mutexes(t_table *t);
+t_bool	init_semaphores(t_table *t);
 void	clear_data(t_table *t);
 
 /*

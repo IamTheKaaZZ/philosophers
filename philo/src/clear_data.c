@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:12:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/16 14:37:39 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ void	clear_data(t_table *t)
 	pthread_mutex_destroy(&t->message_mutex);
 }
 
-static int	my_perror(const char *str)
+int	my_perror(const char *str)
 {
 	if (str)
 		printf("ERROR: %s", str);
-	return (1);
+	return (EXIT_FAILURE);
 }
 
 int	error_exit(t_table *t, char *errmessage, t_bool clear)
