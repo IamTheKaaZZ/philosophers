@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 15:54:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 14:02:59 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,19 @@ t_bool	unlink_semaphore(const char *name)
 
 void	open_semaphores(t_philo *p)
 {
-	p->lock_sem = sem_open(LOCK_SEMA, O_RDWR);
-	if (p->lock_sem == SEM_FAILED)
-		exit(unlink_semaphore(LOCK_SEMA) + 1);
 	p->message_sem = sem_open(MESSAGE_SEMA, O_RDWR);
-	if (p->lock_sem == SEM_FAILED)
+	if (p->message_sem == SEM_FAILED)
 		exit(unlink_semaphore(MESSAGE_SEMA) + 1);
 	p->forks_sem = sem_open(FORK_SEMA, O_RDWR);
 	if (p->forks_sem == SEM_FAILED)
 		exit(unlink_semaphore(FORK_SEMA) + 1);
+}
+
+void	exit_child(t_philo *p)
+{
+	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0)
+		exit(my_perror("Closing semaphores failure in child.\n"));
+	exit(EXIT_SUCCESS);
 }
 
 void	philosophy_routine(t_philo *p)
@@ -38,29 +42,27 @@ void	philosophy_routine(t_philo *p)
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
-		if (p->status == DEAD || p->status == FULL_END)
-			break ;
+		if (p->status == DEAD)
+			exit_child(p);
 		eating(p);
-		if (p->status == DEAD || p->status == FULL_END)
-			break ;
+		if (p->status == DEAD)
+			exit_child(p);
 		sleeping(p);
-		if (p->status == DEAD || p->status == FULL_END)
-			break ;
+		if (p->status == DEAD)
+			exit_child(p);
 		p->status = THINKING;
 		message_printer(p);
-		if (p->status == DEAD || p->status == FULL_END)
-			break ;
+		if (p->status == DEAD)
+			exit_child(p);
 	}
-	if (sem_close(p->message_sem) < 0 || sem_close(p->lock_sem) < 0
-		|| sem_close(p->forks_sem) < 0)
-		exit(my_perror("Closing semaphores failure.\n"));
-	exit(EXIT_SUCCESS);
+	exit_child(p);
 }
 
 int	start_processes(t_table *t)
 {
 	int		i;
 	t_ll	start_time;
+	int		wstatus;
 
 	start_time = get_current_time(0);
 	i = -1;
@@ -74,15 +76,19 @@ int	start_processes(t_table *t)
 		if (t->philos[i].pid == 0)
 			philosophy_routine(&t->philos[i]);
 	}
+	printf("Starting to wait\n");
+	i = -1;
+	while (TRUE)
+	{
+		if (waitpid(0, &wstatus, WNOHANG) < 0)
+			return (my_perror("Waitpid failure.\n"));
+		if (WIFEXITED(wstatus))
+			break ;
+	}
+	printf("killing children\n");
 	i = -1;
 	while (++i < t->n_philos)
-	{
-		if (waitpid(t->philos[i].pid, NULL, 0) < 0)
-			return (my_perror("Waitpid failure.\n"));
-	}
-	if (unlink_semaphore(MESSAGE_SEMA) || unlink_semaphore(LOCK_SEMA)
-		|| unlink_semaphore(FORK_SEMA))
-		return (1);
+		kill(t->philos[i].pid, SIGTERM);
 	return (0);
 }
 

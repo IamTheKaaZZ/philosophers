@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 15:24:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 17:01:30 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 11:57:22 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,8 @@ void	sleeping(t_philo *philo)
 
 	philo->status = SLEEPING;
 	message_printer(philo);
-	sem_wait(philo->lock_sem);
 	sem_post(philo->forks_sem);
 	sem_post(philo->forks_sem);
-	sem_post(philo->lock_sem);
-	// put_fork_down(philo->left_fork_m, philo->left_fork_taken);
-	// put_fork_down(philo->right_fork_m, philo->right_fork_taken);
 	end_sleep = get_current_time(philo->start_time) + philo->time_to_sleep;
 	if (countdown(philo, end_sleep))
 		return ;

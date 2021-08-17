@@ -6,12 +6,12 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 15:16:43 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 13:04:14 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -27,7 +27,6 @@
 # define TRUE 1
 # define FALSE 0
 # define ONE_MS 1000
-# define LOCK_SEMA "pSemLock"
 # define FORK_SEMA "pSemFork"
 # define MESSAGE_SEMA "pSemMessage"
 
@@ -35,14 +34,13 @@ typedef long long		t_ll;
 typedef unsigned long	t_ul;
 typedef int				t_bool;
 
-typedef enum s_status
+typedef enum e_status
 {
 	TOOK_FORK,
 	EATING,
 	SLEEPING,
 	THINKING,
-	DEAD,
-	FULL_END
+	DEAD
 }	t_status;
 
 typedef struct s_philo
@@ -56,10 +54,7 @@ typedef struct s_philo
 	t_ll		time_to_sleep;
 	t_ll		time_to_die;
 	t_ll		new_death_time;
-	// t_bool		*left_fork_taken;
-	// t_bool		*right_fork_taken;
 	t_bool		*somebody_is_dead;
-	sem_t		*lock_sem;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
 }					t_philo;
@@ -73,10 +68,8 @@ typedef struct s_table
 	t_ll		max_eat;
 	t_philo		*philos;
 	t_bool		somebody_died;
-	// t_bool		*taken_forks;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
-	sem_t		*lock_sem;
 }					t_table;
 
 /*

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 17:14:08 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 13:05:09 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	clear_data(t_table *t)
 		free(t->philos);
 		t->philos = NULL;
 	}
-	sem_unlink(LOCK_SEMA);
 	sem_unlink(MESSAGE_SEMA);
 	sem_unlink(FORK_SEMA);
 }
