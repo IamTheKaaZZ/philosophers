@@ -6,11 +6,19 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 15:38:15 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 15:00:56 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
+
+/*
+	Replaced the mutex with a semaphore
+	+ force other philos to wait until they get killed by the parent
+		-> sem_wait locks them into waiting forever after someone died
+		-> The dead philosopher will get detected by waitpid in the parent
+		-> The parent then kills all remaining waitng processes
+*/
 
 void	message_printer(t_philo *philo)
 {
@@ -24,7 +32,10 @@ void	message_printer(t_philo *philo)
 
 	sem_wait(philo->message_sem);
 	if (*philo->somebody_is_dead)
+	{
 		philo->status = DEAD;
+		sem_wait(philo->message_sem);
+	}
 	else
 	{
 		printf("\033[46;1m[%lld ms] \033[33mPhilosopher %d\033[0m %s\n",

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 14:02:59 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 15:20:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	start_processes(t_table *t)
 {
 	int		i;
 	t_ll	start_time;
-	int		wstatus;
+	// int		wstatus;
 
 	start_time = get_current_time(0);
 	i = -1;
@@ -76,25 +76,28 @@ int	start_processes(t_table *t)
 		if (t->philos[i].pid == 0)
 			philosophy_routine(&t->philos[i]);
 	}
-	printf("Starting to wait\n");
-	i = -1;
-	while (TRUE)
-	{
-		if (waitpid(0, &wstatus, WNOHANG) < 0)
-			return (my_perror("Waitpid failure.\n"));
-		if (WIFEXITED(wstatus))
-			break ;
-	}
-	printf("killing children\n");
-	i = -1;
-	while (++i < t->n_philos)
-		kill(t->philos[i].pid, SIGTERM);
+	// printf("Starting to wait\n");
+	// i = -1;
+	// while (TRUE)
+	// {
+	// 	//0 means all the processes in the group AKA the children
+	// 	if (waitpid(0, &wstatus, WNOHANG) < 0)
+	// 		return (my_perror("Waitpid failure.\n"));
+	// 	if (WIFEXITED(wstatus))
+	// 		break ;
+	// }
+	// printf("killing children\n");
+	// i = -1;
+	// while (++i < t->n_philos)
+	// 	kill(t->philos[i].pid, SIGTERM);
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
 	t_table	t;
+	int		i;
+	int		wstatus;
 
 	if (error_and_init(&t, argc, argv))
 		error_exit(&t, "Data init error.\n", TRUE);
@@ -104,6 +107,19 @@ int	main(int argc, char **argv)
 		error_exit(&t, "Philosophers init error.\n", TRUE);
 	if (start_processes(&t))
 		error_exit(&t, "Process forking error.\n", TRUE);
+	printf("Starting to wait\n");
+	while (TRUE)
+	{
+		//0 means all the processes in the group AKA the children
+		if (waitpid(0, &wstatus, WNOHANG) < 0)
+			error_exit(&t, "Waitpid failure.\n", TRUE);
+		if (WIFEXITED(wstatus))
+			break ;
+	}
+	printf("killing children\n");
+	i = -1;
+	while (++i < t.n_philos)
+		kill(t.philos[i].pid, SIGTERM);
 	clear_data(&t);
 	exit(EXIT_SUCCESS);
 }

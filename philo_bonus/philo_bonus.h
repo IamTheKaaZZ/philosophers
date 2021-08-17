@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 13:04:14 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 15:12:32 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);
 t_bool	init_semaphores(t_table *t);
+t_bool	wait_and_kill(t_table *t);
+void	exit_child(t_philo *p);
 void	clear_data(t_table *t);
 
 /*

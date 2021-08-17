@@ -6,11 +6,39 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 13:03:45 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 15:21:07 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
+
+// void	exit_child(t_philo *p)
+// {
+// 	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0)
+// 		exit(my_perror("Closing semaphores failure in child.\n"));
+// 	exit(EXIT_SUCCESS);
+// }
+
+// t_bool	wait_and_kill(t_table *t)
+// {
+// 	int	i;
+// 	int	wstatus;
+
+// 	printf("Starting to wait\n");
+// 	while (TRUE)
+// 	{
+// 		//0 means all the processes in the group AKA the children
+// 		if (waitpid(0, &wstatus, WNOHANG) < 0)
+// 			return (my_perror("Waitpid failure.\n"));
+// 		if (WIFEXITED(wstatus))
+// 			break ;
+// 	}
+// 	printf("killing children\n");
+// 	i = -1;
+// 	while (++i < t->n_philos)
+// 		kill(t->philos[i].pid, SIGTERM);
+// 	return (0);
+// }
 
 /*
 ** only take forks when both are available!
