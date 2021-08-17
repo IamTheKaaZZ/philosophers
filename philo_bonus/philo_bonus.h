@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 15:12:32 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 18:36:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define ONE_MS 1000
 # define FORK_SEMA "pSemFork"
 # define MESSAGE_SEMA "pSemMessage"
+# define SYNC_SEMA "pSemSync"
 
 typedef long long		t_ll;
 typedef unsigned long	t_ul;
@@ -57,7 +58,8 @@ typedef struct s_philo
 	t_bool		*somebody_is_dead;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
-}					t_philo;
+	sem_t		*sync_sem;
+}				t_philo;
 
 typedef struct s_table
 {
@@ -70,7 +72,8 @@ typedef struct s_table
 	t_bool		somebody_died;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
-}					t_table;
+	sem_t		**sync_semas;
+}				t_table;
 
 /*
 **	Init and error
@@ -81,7 +84,7 @@ int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);
 t_bool	init_semaphores(t_table *t);
-t_bool	wait_and_kill(t_table *t);
+t_bool	unlink_semaphore(const char *name);
 void	exit_child(t_philo *p);
 void	clear_data(t_table *t);
 
@@ -98,6 +101,8 @@ t_ll	get_current_time(t_ll start_time);
 */
 void	message_printer(t_philo *philo);
 t_bool	check_death(t_philo *p);
+void	open_semaphores(t_philo *p);
+void	philosophy_routine(t_philo *p);
 void	take_forks(t_philo *philo);
 void	put_fork_down(sem_t	 *fork, t_bool *taken);
 void	eating(t_philo *philo);

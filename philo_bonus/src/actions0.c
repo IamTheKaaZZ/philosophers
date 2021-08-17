@@ -6,39 +6,58 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 15:21:07 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 18:41:51 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
 
-// void	exit_child(t_philo *p)
-// {
-// 	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0)
-// 		exit(my_perror("Closing semaphores failure in child.\n"));
-// 	exit(EXIT_SUCCESS);
-// }
+t_bool	unlink_semaphore(const char *name)
+{
+	if (sem_unlink(name) < 0)
+		return (my_perror("sem_unlink failure.\n"));
+	return (0);
+}
 
-// t_bool	wait_and_kill(t_table *t)
-// {
-// 	int	i;
-// 	int	wstatus;
+void	open_semaphores(t_philo *p)
+{
+	p->message_sem = sem_open(MESSAGE_SEMA, O_RDWR);
+	if (p->message_sem == SEM_FAILED)
+		exit(unlink_semaphore(MESSAGE_SEMA) + 1);
+	p->forks_sem = sem_open(FORK_SEMA, O_RDWR);
+	if (p->forks_sem == SEM_FAILED)
+		exit(unlink_semaphore(FORK_SEMA) + 1);
+}
 
-// 	printf("Starting to wait\n");
-// 	while (TRUE)
-// 	{
-// 		//0 means all the processes in the group AKA the children
-// 		if (waitpid(0, &wstatus, WNOHANG) < 0)
-// 			return (my_perror("Waitpid failure.\n"));
-// 		if (WIFEXITED(wstatus))
-// 			break ;
-// 	}
-// 	printf("killing children\n");
-// 	i = -1;
-// 	while (++i < t->n_philos)
-// 		kill(t->philos[i].pid, SIGTERM);
-// 	return (0);
-// }
+void	exit_child(t_philo *p)
+{
+	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0)
+		exit(my_perror("Closing semaphores failure in child.\n"));
+	exit(EXIT_SUCCESS);
+}
+
+void	philosophy_routine(t_philo *p)
+{
+	sem_wait(p->sync_sem);
+	open_semaphores(p);
+	while (p->eat_count != 0)
+	{
+		take_forks(p);
+		if (p->status == DEAD)
+			exit_child(p);
+		eating(p);
+		if (p->status == DEAD)
+			exit_child(p);
+		sleeping(p);
+		if (p->status == DEAD)
+			exit_child(p);
+		p->status = THINKING;
+		message_printer(p);
+		if (p->status == DEAD)
+			exit_child(p);
+	}
+	exit_child(p);
+}
 
 /*
 ** only take forks when both are available!
