@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 18:36:41 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 19:58:48 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_philo
 	t_bool		*somebody_is_dead;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
-	sem_t		*sync_sem;
+	// sem_t		*sync_sem;
 }				t_philo;
 
 typedef struct s_table
@@ -72,7 +72,7 @@ typedef struct s_table
 	t_bool		somebody_died;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
-	sem_t		**sync_semas;
+	// sem_t		*sync_sema;
 }				t_table;
 
 /*

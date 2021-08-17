@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 18:51:14 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 20:04:29 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_bool	wait_and_kill(t_table *t)
 {
 	int		wstatus;
 	int		i;
-	t_ll	start_time;
+	// t_ll	start_time;
 
 	printf("Starting to wait\n");
 	while (TRUE)
@@ -26,14 +26,6 @@ t_bool	wait_and_kill(t_table *t)
 			return (my_perror("Waitpid failure.\n"));
 		if (WIFEXITED(wstatus))
 			break ;
-	}
-	start_time = get_current_time(0);
-	printf("releasing all semaphores at %lld\n", start_time);
-	i = -1;
-	while (++i < t->n_philos)
-	{
-		t->philos[i].start_time = start_time;
-		sem_post(t->sync_semas[i]);
 	}
 	printf("killing children\n");
 	i = -1;
@@ -45,20 +37,26 @@ t_bool	wait_and_kill(t_table *t)
 int	start_processes(t_table *t)
 {
 	int		i;
-	// t_ll	start_time;
+	t_ll	start_time;
 
-	// start_time = get_current_time(0);
+	start_time = get_current_time(0);
 	i = -1;
 	while (++i < t->n_philos)
 	{
 		t->philos[i].id = i;
-		// t->philos[i].start_time = start_time;
+		t->philos[i].start_time = start_time;
 		t->philos[i].pid = fork();
 		if (t->philos[i].pid == -1)
 			return (my_perror("Forking failure.\n"));
 		if (t->philos[i].pid == 0)
 			philosophy_routine(&t->philos[i]);
 	}
+	// start_time = get_current_time(start_time);
+	// printf("releasing the sync semaphore at %lld\n", start_time);
+	// i = -1;
+	// while (++i < t->n_philos)
+	// 	t->philos[i].start_time = start_time;
+	// sem_post(t->sync_sema);
 	return (wait_and_kill(t));
 }
 

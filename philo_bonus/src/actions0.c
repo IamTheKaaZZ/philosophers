@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 18:41:51 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/17 19:59:17 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ void	open_semaphores(t_philo *p)
 	p->forks_sem = sem_open(FORK_SEMA, O_RDWR);
 	if (p->forks_sem == SEM_FAILED)
 		exit(unlink_semaphore(FORK_SEMA) + 1);
+	// p->sync_sem = sem_open(SYNC_SEMA, O_RDWR);
+	// if (p->sync_sem == SEM_FAILED)
+	// 	exit(unlink_semaphore(SYNC_SEMA) + 1);
 }
 
 void	exit_child(t_philo *p)
@@ -38,8 +41,9 @@ void	exit_child(t_philo *p)
 
 void	philosophy_routine(t_philo *p)
 {
-	sem_wait(p->sync_sem);
 	open_semaphores(p);
+	// sem_wait(p->sync_sem);
+	// printf("i'm a bad child and did not wait\n");
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
