@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 19:59:17 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/18 18:42:44 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,6 @@ void	open_semaphores(t_philo *p)
 	p->forks_sem = sem_open(FORK_SEMA, O_RDWR);
 	if (p->forks_sem == SEM_FAILED)
 		exit(unlink_semaphore(FORK_SEMA) + 1);
-	// p->sync_sem = sem_open(SYNC_SEMA, O_RDWR);
-	// if (p->sync_sem == SEM_FAILED)
-	// 	exit(unlink_semaphore(SYNC_SEMA) + 1);
 }
 
 void	exit_child(t_philo *p)
@@ -42,8 +39,7 @@ void	exit_child(t_philo *p)
 void	philosophy_routine(t_philo *p)
 {
 	open_semaphores(p);
-	// sem_wait(p->sync_sem);
-	// printf("i'm a bad child and did not wait\n");
+	// p->start_time = get_current_time(0);
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
@@ -71,23 +67,16 @@ void	philosophy_routine(t_philo *p)
 
 void	take_forks(t_philo *philo)
 {
-	int		i;
 	t_bool	has_two_forks;
 
 	has_two_forks = FALSE;
 	while (!has_two_forks)
 	{
-		i = 0;
-		while (i < 2)
-		{
-			if (check_death(philo))
-				return ;
-			if (sem_wait(philo->forks_sem) < 0)
-				continue ;
-			i++;
-		}
-		if (i == 2)
-			has_two_forks = TRUE;
+		if (check_death(philo))
+			return ;
+		sem_wait(philo->forks_sem);
+		sem_wait(philo->forks_sem);
+		has_two_forks = TRUE;
 		if (check_death(philo))
 			return ;
 	}

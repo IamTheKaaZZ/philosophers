@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 15:00:56 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/18 18:54:28 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,13 @@ void	message_printer(t_philo *philo)
 	};
 
 	sem_wait(philo->message_sem);
-	if (*philo->somebody_is_dead)
-	{
-		philo->status = DEAD;
-		sem_wait(philo->message_sem);
-	}
-	else
-	{
-		printf("\033[46;1m[%lld ms] \033[33mPhilosopher %d\033[0m %s\n",
-			get_current_time(philo->start_time),
-			philo->id + 1,
-			action_str[philo->status]
-			);
-	}
+	printf("\033[46;1m[%lld ms] \033[33mPhilosopher %d\033[0m %s\n",
+		get_current_time(philo->start_time),
+		philo->id + 1,
+		action_str[philo->status]
+		);
 	if (philo->status == DEAD && !*philo->somebody_is_dead)
 		*philo->somebody_is_dead = TRUE;
-	sem_post(philo->message_sem);
+	else
+		sem_post(philo->message_sem);
 }

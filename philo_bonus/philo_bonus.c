@@ -6,28 +6,29 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 20:04:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/18 19:02:28 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/*
+	Wait AND KILL THE CHILDREN MUHAHAHAHA
+*/
+
 t_bool	wait_and_kill(t_table *t)
 {
 	int		wstatus;
 	int		i;
-	// t_ll	start_time;
 
-	printf("Starting to wait\n");
-	while (TRUE)
+	i = -1;
+	while (++i < t->n_philos)
 	{
-		//0 means all the processes in the group AKA the children
-		if (waitpid(0, &wstatus, WNOHANG) < 0)
+		if (waitpid(t->philos[i].pid, &wstatus, 0) < 0)
 			return (my_perror("Waitpid failure.\n"));
 		if (WIFEXITED(wstatus))
 			break ;
 	}
-	printf("killing children\n");
 	i = -1;
 	while (++i < t->n_philos)
 		kill(t->philos[i].pid, SIGTERM);
@@ -51,12 +52,6 @@ int	start_processes(t_table *t)
 		if (t->philos[i].pid == 0)
 			philosophy_routine(&t->philos[i]);
 	}
-	// start_time = get_current_time(start_time);
-	// printf("releasing the sync semaphore at %lld\n", start_time);
-	// i = -1;
-	// while (++i < t->n_philos)
-	// 	t->philos[i].start_time = start_time;
-	// sem_post(t->sync_sema);
 	return (wait_and_kill(t));
 }
 
