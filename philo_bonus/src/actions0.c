@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/18 18:42:44 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/19 18:22:47 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ void	take_forks(t_philo *philo)
 		if (check_death(philo))
 			return ;
 		sem_wait(philo->forks_sem);
+		philo->status = TOOK_FORK;
+		message_printer(philo);
 		sem_wait(philo->forks_sem);
+		message_printer(philo);
 		has_two_forks = TRUE;
 		if (check_death(philo))
 			return ;
 	}
-	philo->status = TOOK_FORK;
-	message_printer(philo);
-	message_printer(philo);
 }
