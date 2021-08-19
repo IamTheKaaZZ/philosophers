@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/18 18:23:49 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/19 19:46:09 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_philo
 	t_ll		time_to_sleep;
 	t_ll		time_to_die;
 	t_ll		new_death_time;
+	int			*available_forks;
 	t_bool		*somebody_is_dead;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
@@ -67,6 +68,7 @@ typedef struct s_table
 	t_ll		sleep_time;
 	t_ll		max_eat;
 	t_philo		*philos;
+	int			available_forks;
 	t_bool		somebody_died;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
@@ -92,6 +94,7 @@ void	clear_data(t_table *t);
 int		ft_atoi(const char *numstr);
 t_ll	get_time_elapsed(void);
 t_ll	get_current_time(t_ll start_time);
+t_bool	countdown(t_philo *philo, t_ll end_time);
 
 /*
 **	Philosopher functions

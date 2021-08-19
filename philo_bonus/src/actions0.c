@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/19 18:22:47 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/19 20:08:06 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	exit_child(t_philo *p)
 void	philosophy_routine(t_philo *p)
 {
 	open_semaphores(p);
-	// p->start_time = get_current_time(0);
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
@@ -63,24 +62,29 @@ void	philosophy_routine(t_philo *p)
 ** only take forks when both are available!
 	the fork_taken variables are shared between philos
 **	=> they need to be locked and unlocked when something happens to them
+	=> one philo edge case gets handled first => see init
 */
 
 void	take_forks(t_philo *philo)
 {
-	t_bool	has_two_forks;
-
-	has_two_forks = FALSE;
-	while (!has_two_forks)
+	if (philo->status == TOOK_FORK)
+	{
+		message_printer(philo);
+		if (countdown(philo, philo->new_death_time + 20))
+			return ;
+	}
+	while (*philo->available_forks < 2)
 	{
 		if (check_death(philo))
 			return ;
-		sem_wait(philo->forks_sem);
-		philo->status = TOOK_FORK;
-		message_printer(philo);
-		sem_wait(philo->forks_sem);
-		message_printer(philo);
-		has_two_forks = TRUE;
-		if (check_death(philo))
-			return ;
 	}
+	sem_wait(philo->forks_sem);
+	*philo->available_forks -= 1;
+	sem_wait(philo->forks_sem);
+	*philo->available_forks -= 1;
+	if (check_death(philo))
+		return ;
+	philo->status = TOOK_FORK;
+	message_printer(philo);
+	message_printer(philo);
 }

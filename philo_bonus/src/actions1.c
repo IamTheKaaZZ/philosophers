@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 15:24:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/17 11:57:22 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/19 20:07:40 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
 
-static t_bool	countdown(t_philo *philo, t_ll end_time)
+t_bool	countdown(t_philo *philo, t_ll end_time)
 {
 	while (get_current_time(philo->start_time) < end_time)
 	{
@@ -52,7 +52,9 @@ void	sleeping(t_philo *philo)
 	philo->status = SLEEPING;
 	message_printer(philo);
 	sem_post(philo->forks_sem);
+	*philo->available_forks += 1;
 	sem_post(philo->forks_sem);
+	*philo->available_forks += 1;
 	end_sleep = get_current_time(philo->start_time) + philo->time_to_sleep;
 	if (countdown(philo, end_sleep))
 		return ;

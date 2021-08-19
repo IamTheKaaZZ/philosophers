@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/18 18:23:58 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/19 19:45:46 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	}
 	else
 		t->max_eat = -1;
+	t->available_forks = t->n_philos;
 	return (0);
 }
 
@@ -55,6 +56,10 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	return (0);
 }
 
+/*
+	Handled the 1 philo edge case here instead.
+*/
+
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 {
 	int	i;
@@ -64,13 +69,17 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 	{
 		philos[i].id = i;
 		philos[i].eat_count = t->max_eat;
-		philos[i].status = THINKING;
+		if (n_philos == 1)
+			philos[i].status = TOOK_FORK;
+		else
+			philos[i].status = THINKING;
 		philos[i].start_time = 0;
 		philos[i].time_to_eat = t->eat_time;
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].new_death_time = t->death_time;
 		philos[i].somebody_is_dead = &t->somebody_died;
+		philos[i].available_forks = &t->available_forks;
 	}
 	return (0);
 }
