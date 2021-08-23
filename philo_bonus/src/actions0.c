@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 19:38:49 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/23 20:10:22 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,17 +45,17 @@ void	philosophy_routine(t_philo *p)
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
-		if (p->status == DEAD)
+		if (p->status == DEAD || check_death(p))
 			exit_child(p);
 		eating(p);
-		if (p->status == DEAD)
+		if (p->status == DEAD || check_death(p))
 			exit_child(p);
 		sleeping(p);
-		if (p->status == DEAD)
+		if (p->status == DEAD || check_death(p))
 			exit_child(p);
 		p->status = THINKING;
 		message_printer(p);
-		if (p->status == DEAD)
+		if (p->status == DEAD || check_death(p))
 			exit_child(p);
 	}
 	exit_child(p);
