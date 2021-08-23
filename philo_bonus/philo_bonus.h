@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 18:42:31 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/23 19:42:34 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define ONE_MS 1000
 # define FORK_SEMA "pSemFork"
 # define MESSAGE_SEMA "pSemMessage"
+# define DEATH_SEMA "pSemDeath"
 
 typedef long long		t_ll;
 typedef unsigned long	t_ul;
@@ -54,9 +55,9 @@ typedef struct s_philo
 	t_ll		time_to_sleep;
 	t_ll		time_to_die;
 	t_ll		new_death_time;
-	t_bool		*somebody_is_dead;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
+	sem_t		*death_sem;
 }				t_philo;
 
 typedef struct s_table
@@ -67,9 +68,9 @@ typedef struct s_table
 	t_ll		sleep_time;
 	t_ll		max_eat;
 	t_philo		*philos;
-	t_bool		somebody_died;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
+	sem_t		*death_sem;
 }				t_table;
 
 /*

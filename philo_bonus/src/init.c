@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 19:13:02 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/23 19:42:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].new_death_time = t->death_time;
-		philos[i].somebody_is_dead = &t->somebody_died;
 	}
 	return (0);
 }
@@ -117,9 +116,13 @@ t_bool	init_semaphores(t_table *t)
 {
 	sem_unlink(MESSAGE_SEMA);
 	sem_unlink(FORK_SEMA);
+	sem_unlink(DEATH_SEMA);
 	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
 	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos / 2))
 		return (1);
+	t->death_sem = sem_open(DEATH_SEMA, O_CREAT | O_EXCL, 0600, 0);
+	if (t->death_sem == SEM_FAILED)
+		return (my_perror("Opening named semaphore.\n"));
 	return (0);
 }
