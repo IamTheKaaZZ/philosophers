@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/19 19:41:02 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/23 19:06:13 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,24 @@ t_bool	wait_and_kill(t_table *t)
 {
 	int		wstatus;
 	int		i;
+	int		signal;
 
-	i = -1;
-	while (++i < t->n_philos)
+	while (TRUE)
 	{
-		if (waitpid(t->philos[i].pid, &wstatus, 0) < 0)
-			return (my_perror("Waitpid failure.\n"));
+		i = -1;
+		while (++i < t->n_philos)
+		{
+			signal = waitpid(t->philos[i].pid , &wstatus, WNOHANG | WUNTRACED | WCONTINUED);
+			if (signal < 0)
+				return (my_perror("Waitpid failure.\n"));
+			if (WIFSIGNALED(wstatus))
+			{
+				if (check_death(&t->philos[i]))
+					break ;
+			}
+			if (WIFEXITED(wstatus))
+				break ;
+		}
 		if (WIFEXITED(wstatus))
 			break ;
 	}

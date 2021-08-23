@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/19 19:45:46 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/23 19:13:02 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	}
 	else
 		t->max_eat = -1;
-	t->available_forks = t->n_philos;
 	return (0);
 }
 
@@ -79,7 +78,6 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_die = t->death_time;
 		philos[i].new_death_time = t->death_time;
 		philos[i].somebody_is_dead = &t->somebody_died;
-		philos[i].available_forks = &t->available_forks;
 	}
 	return (0);
 }
@@ -109,13 +107,19 @@ static t_bool	open_and_close(sem_t *semaphore, char *name, int value)
 	return (0);
 }
 
+/*
+	The forks_sema gets initialized with a value of n_philos / 2
+	=> 2 forks per philo
+	=> semaphore only needs to be accessed once per time they want forks
+*/
+
 t_bool	init_semaphores(t_table *t)
 {
 	sem_unlink(MESSAGE_SEMA);
 	sem_unlink(FORK_SEMA);
 	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
-	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos))
+	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos / 2))
 		return (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/19 20:08:06 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/23 19:01:01 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,7 @@ void	take_forks(t_philo *philo)
 		if (countdown(philo, philo->new_death_time + 20))
 			return ;
 	}
-	while (*philo->available_forks < 2)
-	{
-		if (check_death(philo))
-			return ;
-	}
 	sem_wait(philo->forks_sem);
-	*philo->available_forks -= 1;
-	sem_wait(philo->forks_sem);
-	*philo->available_forks -= 1;
 	if (check_death(philo))
 		return ;
 	philo->status = TOOK_FORK;
