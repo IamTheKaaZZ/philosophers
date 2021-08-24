@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 20:10:22 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 11:19:39 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,28 +34,34 @@ void	open_semaphores(t_philo *p)
 
 void	exit_child(t_philo *p)
 {
-	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0)
+	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0
+		|| sem_close(p->death_sem) < 0)
 		exit(my_perror("Closing semaphores failure in child.\n"));
 	exit(EXIT_SUCCESS);
 }
 
 void	philosophy_routine(t_philo *p)
 {
+	pthread_t	death_checker;
+
 	open_semaphores(p);
+	pthread_create(&death_checker, NULL, death_routine, (void *)p);
 	while (p->eat_count != 0)
 	{
+		if (p->status == DEAD)
+			exit_child(p);
 		take_forks(p);
-		if (p->status == DEAD || check_death(p))
+		if (p->status == DEAD)
 			exit_child(p);
 		eating(p);
-		if (p->status == DEAD || check_death(p))
+		if (p->status == DEAD)
 			exit_child(p);
 		sleeping(p);
-		if (p->status == DEAD || check_death(p))
+		if (p->status == DEAD)
 			exit_child(p);
 		p->status = THINKING;
 		message_printer(p);
-		if (p->status == DEAD || check_death(p))
+		if (p->status == DEAD)
 			exit_child(p);
 	}
 	exit_child(p);
@@ -77,8 +83,8 @@ void	take_forks(t_philo *philo)
 			return ;
 	}
 	sem_wait(philo->forks_sem);
-	if (check_death(philo))
-		return ;
+	// if (check_death(philo))
+	// 	return ;
 	philo->status = TOOK_FORK;
 	message_printer(philo);
 	message_printer(philo);

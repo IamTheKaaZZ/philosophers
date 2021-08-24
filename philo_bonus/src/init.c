@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 19:42:41 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 10:47:07 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_eat = t->eat_time;
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
+		philos[i].time_ate = 0;
 		philos[i].new_death_time = t->death_time;
 	}
 	return (0);

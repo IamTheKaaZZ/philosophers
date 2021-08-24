@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 19:47:09 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 10:41:37 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	message_printer(t_philo *philo)
 		"\033[31;1mdied.\033[0m"
 	};
 
-	sem_wait(philo->message_sem);
+	// sem_wait(philo->message_sem);
 	printf("\033[46;1m[%lld ms] \033[33mPhilosopher %d\033[0m %s\n",
 		get_current_time(philo->start_time),
 		philo->id + 1,
@@ -38,6 +38,6 @@ void	message_printer(t_philo *philo)
 		);
 	if (philo->status == DEAD)
 		sem_post(philo->death_sem);
-	else
-		sem_post(philo->message_sem);
+	// else
+	// 	sem_post(philo->message_sem);
 }

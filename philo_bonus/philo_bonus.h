@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/23 19:42:34 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 10:46:31 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_philo
 	t_ll		time_to_eat;
 	t_ll		time_to_sleep;
 	t_ll		time_to_die;
+	t_ll		time_ate;
 	t_ll		new_death_time;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
@@ -100,6 +101,7 @@ t_bool	countdown(t_philo *philo, t_ll end_time);
 */
 void	message_printer(t_philo *philo);
 t_bool	check_death(t_philo *p);
+void	*death_routine(void *p);
 void	open_semaphores(t_philo *p);
 void	philosophy_routine(t_philo *p);
 void	take_forks(t_philo *philo);
