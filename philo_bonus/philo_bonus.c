@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/24 11:35:57 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 14:24:59 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@ t_bool	wait_and_kill(t_table *t)
 	int		signal;
 
 	i = -1;
-	while (++i < t->n_philos)
+	while (TRUE)
 	{
-		signal = waitpid(t->philos[i].pid, &wstatus, WNOHANG);
+		signal = waitpid(0, &wstatus, WNOHANG | WUNTRACED);
 		if (signal < 0)
 			return (my_perror("Waitpid failure.\n"));
 		if (WIFEXITED(wstatus))
 			break ;
 	}
-	sem_wait(t->death_sem);
+	printf("killing rest of children\n");
 	i = -1;
 	while (++i < t->n_philos)
 		kill(t->philos[i].pid, SIGTERM);
