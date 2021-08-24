@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 15:24:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/24 14:29:43 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 16:14:53 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	eating(t_philo *philo)
 	sem_wait(philo->message_sem);
 	message_printer(philo, EATING);
 	philo->time_ate = get_current_time(philo->start_time);
-	sem_post(philo->message_sem);
 	philo->eat_count--;
+	sem_post(philo->message_sem);
 	if (countdown(philo, philo->time_ate + philo->time_to_eat))
 		return ;
 }
@@ -43,8 +43,10 @@ void	sleeping(t_philo *philo)
 {
 	t_ll	end_sleep;
 
+	sem_wait(philo->message_sem);
 	message_printer(philo, SLEEPING);
 	sem_post(philo->forks_sem);
+	sem_post(philo->message_sem);
 	end_sleep = get_current_time(philo->start_time) + philo->time_to_sleep;
 	if (countdown(philo, end_sleep))
 		return ;

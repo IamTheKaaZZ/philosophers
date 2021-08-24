@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/24 14:31:03 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/24 16:13:59 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,13 @@ void	open_semaphores(t_philo *p)
 		exit(unlink_semaphore(FORK_SEMA) + 1);
 }
 
-void	exit_child(t_philo *p)
-{
-	if (sem_close(p->message_sem) < 0 || sem_close(p->forks_sem) < 0)
-		exit(my_perror("Closing semaphores failure in child.\n"));
-	exit(EXIT_SUCCESS);
-}
-
 void	philosophy_routine(t_philo *p)
 {
 	pthread_t	death_checker;
 
 	open_semaphores(p);
-	pthread_create(&death_checker, NULL, death_routine, (void *)p);
+	if (pthread_create(&death_checker, NULL, death_routine, (void *)p) != 0)
+		exit(EXIT_FAILURE);
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
@@ -49,7 +43,9 @@ void	philosophy_routine(t_philo *p)
 		sleeping(p);
 		message_printer(p, THINKING);
 	}
-	exit_child(p);
+	if (pthread_join(death_checker, NULL) != 0)
+		exit(EXIT_FAILURE);
+	exit(EXIT_SUCCESS);
 }
 
 /*
