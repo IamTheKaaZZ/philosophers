@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 12:00:10 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/27 12:59:45 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,9 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_die = t->death_time;
 		philos[i].time_ate = 0;
 		make_named_sema(TIME_SEMA, semaphore, i);
+		sem_unlink(semaphore);
+		philos[i].time_sem = sem_open(semaphore, O_CREAT | O_EXCL, 0600, 1);
+		if (semaphore == SEM_FAILED)
+			return (0);
 	}
-	return (0);
 }
