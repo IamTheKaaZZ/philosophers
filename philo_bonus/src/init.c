@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/24 14:30:46 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/27 12:00:10 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,22 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	return (0);
 }
 
+void	make_named_sema(char const *prefix, char *buffer, int id)
+{
+	int	i;
+
+	i = -1;
+	while (prefix[++i])
+		buffer[i] = prefix[i];
+	while (id > 0)
+	{
+		buffer[i++] = (id % 10) + '0';
+		id /= 10;
+	}
+	buffer[i] = 0;
+	printf("%s\n", buffer);
+}
+
 /*
 	Handled the 1 philo edge case here instead.
 */
@@ -62,6 +78,7 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 {
 	int	i;
+	char semaphore[250];
 
 	i = -1;
 	while (++i < n_philos)
@@ -77,48 +94,7 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].time_ate = 0;
+		make_named_sema(TIME_SEMA, semaphore, i);
 	}
-	return (0);
-}
-
-/*
-	~~	The following functions open the shared named semaphores	~~
-	-> Named semaphores are shared in memory by:
-		the parent and any child processes
-	The semaphores will not be used by the parent:
-	->	The parent opens them for the child processes to use later.
-		-> Checks for sem_open failure
-	-> The parent then closes the semaphore for itself since it doesn't need it
-		-> Checks for sem_close failure
-		-> Unlinks the semaphore completely in case of failure
-*/
-
-static t_bool	open_and_close(sem_t *semaphore, char *name, int value)
-{
-	semaphore = sem_open(name, O_CREAT | O_EXCL, 0600, value);
-	if (semaphore == SEM_FAILED)
-		return (my_perror("Opening named semaphore.\n"));
-	if (sem_close(semaphore) < 0)
-	{
-		sem_unlink(name);
-		return (my_perror("Closing named semaphore.\n"));
-	}
-	return (0);
-}
-
-/*
-	The forks_sema gets initialized with a value of n_philos / 2
-	=> 2 forks per philo
-	=> semaphore only needs to be accessed once per time they want forks
-*/
-
-t_bool	init_semaphores(t_table *t)
-{
-	sem_unlink(MESSAGE_SEMA);
-	sem_unlink(FORK_SEMA);
-	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
-		return (1);
-	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos / 2))
-		return (1);
 	return (0);
 }

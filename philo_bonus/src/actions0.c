@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/24 16:13:59 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/27 11:48:16 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	philosophy_routine(t_philo *p)
 	open_semaphores(p);
 	if (pthread_create(&death_checker, NULL, death_routine, (void *)p) != 0)
 		exit(EXIT_FAILURE);
+	pthread_detach(death_checker);
 	while (p->eat_count != 0)
 	{
 		take_forks(p);
@@ -43,8 +44,8 @@ void	philosophy_routine(t_philo *p)
 		sleeping(p);
 		message_printer(p, THINKING);
 	}
-	if (pthread_join(death_checker, NULL) != 0)
-		exit(EXIT_FAILURE);
+	// if (pthread_join(death_checker, NULL) != 0)
+	// 	exit(EXIT_FAILURE);
 	exit(EXIT_SUCCESS);
 }
 

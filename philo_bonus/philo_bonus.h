@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/24 15:48:06 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/08/27 11:49:29 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,14 @@
 # include <semaphore.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+# include <signal.h>
 # include "ft_ansi.h"
 # define TRUE 1
 # define FALSE 0
 # define ONE_MS 1000
 # define FORK_SEMA "pSemFork"
 # define MESSAGE_SEMA "pSemMessage"
+# define TIME_SEMA "pSemTime"
 
 typedef long long		t_ll;
 typedef unsigned long	t_ul;
@@ -56,6 +58,7 @@ typedef struct s_philo
 	t_ll		time_ate;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
+	sem_t		*time_sem;
 }				t_philo;
 
 typedef struct s_table
@@ -68,6 +71,7 @@ typedef struct s_table
 	t_philo		*philos;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
+	// sem_t		*time_sem;
 }				t_table;
 
 /*
@@ -80,7 +84,6 @@ t_bool	error_and_init(t_table *t, int argc, char **argv);
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);
 t_bool	init_semaphores(t_table *t);
 t_bool	unlink_semaphore(const char *name);
-// void	exit_child(t_philo *p);
 void	clear_data(t_table *t);
 
 /*
