@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/09/08 15:22:43 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/08 15:54:39 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,10 +47,10 @@ $(NAME):	$(OBJDR) $(OBJS) $(HEADER)
 			#--------------------------------#
 			@echo "Finished compiling MANDATORY $(NAME)"
 
-bonus:		$(NAME)
-			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -o $(NAME)
-			#--------------------------------#
-			@echo "Finished compiling BONUS $(NAME)"
+# bonus:		$(NAME)
+# 			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -o $(NAME)
+# 			#--------------------------------#
+# 			@echo "Finished compiling BONUS $(NAME)"
 
 $(OBJDR):
 			@mkdir -p $(OBJDR)
