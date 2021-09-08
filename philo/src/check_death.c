@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 11:08:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 14:57:10 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 17:41:51 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 t_bool	check_death(t_philo *p)
 {
-	if (get_current_time(p->start_time) >= p->new_death_time)
+	if (get_current_time(p->start_time) >= p->time_ate + p->time_to_die)
 	{
-		p->status = DEAD;
-		message_printer(p);
+		message_printer(p, DEAD);
 		return (TRUE);
 	}
 	return (FALSE);

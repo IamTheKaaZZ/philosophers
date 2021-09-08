@@ -6,11 +6,28 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 15:44:55 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 17:52:46 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	*death_routine(void *philo)
+{
+	t_philo	*p;
+	t_bool	end;
+
+	end = FALSE;
+	p = (t_philo *)philo;
+	while (!end)
+	{
+		// pthread_mutex_lock(&p->check_m);
+		if (check_death(p) || p->eat_count == 0)
+			end = TRUE;
+		// pthread_mutex_unlock(&p->check_m);
+	}
+	return (NULL);
+}
 
 void	*philosophy_routine(void *philo)
 {
@@ -19,18 +36,19 @@ void	*philosophy_routine(void *philo)
 	p = (t_philo *)philo;
 	while (p->eat_count != 0)
 	{
+		if (p->status == DEAD)
+			break ;
 		take_forks(p);
-		if (p->status == DEAD || p->status == FULL_END)
+		if (p->status == DEAD)
 			break ;
 		eating(p);
-		if (p->status == DEAD || p->status == FULL_END)
+		if (p->status == DEAD)
 			break ;
 		sleeping(p);
-		if (p->status == DEAD || p->status == FULL_END)
+		if (p->status == DEAD)
 			break ;
-		p->status = THINKING;
-		message_printer(p);
-		if (p->status == DEAD || p->status == FULL_END)
+		message_printer(p, THINKING);
+		if (p->status == DEAD)
 			break ;
 	}
 	return (NULL);
@@ -38,8 +56,9 @@ void	*philosophy_routine(void *philo)
 
 int	start_threads(t_table *t)
 {
-	int		i;
-	t_ll	start_time;
+	int			i;
+	t_ll		start_time;
+	pthread_t	death;
 
 	start_time = get_current_time(0);
 	i = -1;
@@ -53,6 +72,10 @@ int	start_threads(t_table *t)
 				(void *)&t->philos[i])
 			!= 0)
 			return (1);
+		if (pthread_create(&death, NULL, death_routine,
+				(void *)&t->philos[i]) != 0)
+			return (1);
+		pthread_detach(death);
 	}
 	i = -1;
 	while (++i < t->n_philos)

@@ -6,38 +6,35 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 15:24:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 15:43:51 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 17:52:53 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-static t_bool	countdown(t_philo *philo, t_ll end_time)
+static void	countdown(t_philo *philo, t_ll end_time)
 {
 	while (get_current_time(philo->start_time) < end_time)
 	{
-		if (check_death(philo))
-			return (1);
 		usleep(100);
 		if (get_current_time(philo->start_time) >= end_time)
 			break ;
 	}
-	return (0);
 }
 
 void	eating(t_philo *philo)
 {
-	t_ll	start_eat;
 	t_ll	end_eat;
 
-	philo->status = EATING;
-	message_printer(philo);
-	start_eat = get_current_time(philo->start_time);
-	end_eat = start_eat + philo->time_to_eat;
-	philo->new_death_time = start_eat + philo->time_to_die;
+	// pthread_mutex_lock(&philo->check_m);
+	message_printer(philo, EATING);
+	philo->time_ate = get_current_time(philo->start_time);
+	end_eat = philo->time_ate + philo->time_to_eat;
 	philo->eat_count--;
-	if (countdown(philo, end_eat))
-		return ;
+	countdown(philo, end_eat);
+	put_fork_down(philo->right_fork_m, philo->right_fork_taken);
+	put_fork_down(philo->left_fork_m, philo->left_fork_taken);
+	// pthread_mutex_unlock(&philo->check_m);
 }
 
 /*
@@ -49,11 +46,7 @@ void	sleeping(t_philo *philo)
 {
 	t_ll	end_sleep;
 
-	philo->status = SLEEPING;
-	message_printer(philo);
-	put_fork_down(philo->left_fork_m, philo->left_fork_taken);
-	put_fork_down(philo->right_fork_m, philo->right_fork_taken);
+	message_printer(philo, SLEEPING);
 	end_sleep = get_current_time(philo->start_time) + philo->time_to_sleep;
-	if (countdown(philo, end_sleep))
-		return ;
+	countdown(philo, end_sleep);
 }

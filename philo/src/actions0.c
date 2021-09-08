@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/12 15:28:14 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 17:43:00 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ static t_bool	one_philo_case(t_philo *philo)
 {
 	if (philo->left_fork_m == philo->right_fork_m)
 	{
-		philo->status = TOOK_FORK;
-		message_printer(philo);
+		message_printer(philo, TOOK_FORK);
 		while (TRUE)
 		{
 			if (check_death(philo))
@@ -79,14 +78,8 @@ void	take_forks(t_philo *philo)
 			check_available_forks(philo, &has_two_forks);
 		if (has_two_forks)
 		{
-			philo->status = TOOK_FORK;
-			message_printer(philo);
-			message_printer(philo);
-		}
-		else
-		{
-			if (check_death(philo))
-				return ;
+			message_printer(philo, TOOK_FORK);
+			message_printer(philo, TOOK_FORK);
 		}
 	}
 }

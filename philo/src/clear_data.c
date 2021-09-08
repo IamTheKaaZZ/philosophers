@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 14:37:39 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 17:09:36 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ void	clear_data(t_table *t)
 	{
 		i = -1;
 		while (++i < t->n_philos)
+		{
 			pthread_mutex_destroy(&t->forks_mutex[i]);
+			pthread_mutex_destroy(&t->philos[i].check_m);
+		}
 		free(t->forks_mutex);
 		t->forks_mutex = NULL;
 	}

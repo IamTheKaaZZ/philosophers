@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 11:45:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:45:55 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 16:59:09 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
 
-t_bool	countdown(t_philo *philo, t_ll end_time)
+void	countdown(t_philo *philo, t_ll end_time)
 {
 	t_ll	curr_time;
 
@@ -24,7 +24,6 @@ t_bool	countdown(t_philo *philo, t_ll end_time)
 		if (curr_time >= end_time)
 			break ;
 	}
-	return (0);
 }
 
 /*
@@ -49,8 +48,7 @@ void	eating(t_philo *philo)
 	philo->time_ate = get_current_time(philo->start_time);
 	philo->eat_count--;
 	usleep(philo->time_to_eat);
-	if (countdown(philo, philo->time_ate + philo->time_to_eat))
-		return ;
+	countdown(philo, philo->time_ate + philo->time_to_eat);
 	sem_post(philo->forks_sem);
 	sem_post(philo->forks_sem);
 	sem_post(philo->time_sem);
@@ -68,6 +66,5 @@ void	sleeping(t_philo *philo)
 	message_printer(philo, SLEEPING);
 	usleep(philo->time_to_sleep);
 	end_sleep = get_current_time(philo->start_time) + philo->time_to_sleep;
-	if (countdown(philo, end_sleep))
-		return ;
+	countdown(philo, end_sleep);
 }

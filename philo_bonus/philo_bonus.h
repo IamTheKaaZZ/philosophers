@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 14:07:23 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 16:58:40 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,6 @@ int		ft_atoi(const char *numstr);
 size_t	ft_strlen(const char *str);
 t_ll	get_time_elapsed(void);
 t_ll	get_current_time(t_ll start_time);
-t_bool	countdown(t_philo *philo, t_ll end_time);
 
 /*
 **	Philosopher functions

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 15:30:13 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 17:08:51 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,12 @@ t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 		philos[i].time_to_eat = t->eat_time;
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
-		philos[i].new_death_time = t->death_time;
+		philos[i].time_ate = 0;
 		assign_forks(t, &philos[i]);
 		philos[i].somebody_is_dead = &t->somebody_died;
 		philos[i].message_m = &t->message_mutex;
+		if (pthread_mutex_init(&t->philos[i].check_m, NULL) != 0)
+			return (my_perror("Mutex init fail.\n"));
 	}
 	return (0);
 }
