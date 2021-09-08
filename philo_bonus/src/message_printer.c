@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:29:54 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 11:17:34 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:14:43 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,6 @@ void	message_printer(t_philo *philo, int status)
 		philo->id + 1,
 		action_str[status]
 		);
-	sem_post(philo->message_sem);
+	if (status != DEAD)
+		sem_post(philo->message_sem);
 }

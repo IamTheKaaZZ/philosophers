@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 11:06:31 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:48:16 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	Wait AND KILL THE CHILDREN MUHAHAHAHA
 */
 
-t_bool	wait_and_kill(t_table *t)
+t_bool	wait_children(t_table *t)
 {
 	int		wstatus;
 	int		i;
@@ -28,12 +28,7 @@ t_bool	wait_and_kill(t_table *t)
 		signal = waitpid(t->philos[i].pid, &wstatus, 0);
 		if (signal < 0)
 			return (my_perror("Waitpid failure.\n"));
-		if (WIFEXITED(wstatus))
-			break ;
 	}
-	i = -1;
-	while (++i < t->n_philos)
-		kill(t->philos[i].pid, SIGTERM);
 	return (0);
 }
 
@@ -54,7 +49,7 @@ int	start_processes(t_table *t)
 		if (t->philos[i].pid == 0)
 			philosophy_routine(&t->philos[i]);
 	}
-	return (wait_and_kill(t));
+	return (wait_children(t));
 }
 
 int	main(int argc, char **argv)

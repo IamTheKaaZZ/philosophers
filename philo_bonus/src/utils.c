@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   atoi.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/19 13:05:11 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/16 11:57:27 by bcosters         ###   ########.fr       */
+/*   Created: 2021/09/08 10:35:03 by bcosters          #+#    #+#             */
+/*   Updated: 2021/09/08 10:36:21 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,16 @@ int	ft_atoi(const char *numstr)
 		i++;
 	}
 	return (res * sign);
+}
+
+size_t	ft_strlen(const char *str)
+{
+	int	len;
+
+	len = 0;
+	if (!str)
+		return (len);
+	while (str[len])
+		len++;
+	return (len);
 }

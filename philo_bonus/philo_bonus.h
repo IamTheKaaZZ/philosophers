@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 11:49:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:48:48 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct s_philo
 	pid_t		pid;
 	int			id;
 	int			eat_count;
-	t_status	status;
 	t_ll		start_time;
 	t_ll		time_to_eat;
 	t_ll		time_to_sleep;
@@ -58,6 +57,7 @@ typedef struct s_philo
 	t_ll		time_ate;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
+	char		*sema_name;
 	sem_t		*time_sem;
 }				t_philo;
 
@@ -71,7 +71,6 @@ typedef struct s_table
 	t_philo		*philos;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
-	// sem_t		*time_sem;
 }				t_table;
 
 /*
@@ -83,6 +82,9 @@ int		error_exit(t_table *t, char *errmessage, t_bool clear);
 t_bool	error_and_init(t_table *t, int argc, char **argv);
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos);
 t_bool	init_semaphores(t_table *t);
+char	*make_named_sema(char const *prefix, int id);
+t_bool	sem_open_check(sem_t **semaphore, char *name, int value);
+t_bool	open_and_close(sem_t *semaphore, char *name, int value);
 t_bool	unlink_semaphore(const char *name);
 void	clear_data(t_table *t);
 
@@ -91,6 +93,7 @@ void	clear_data(t_table *t);
 */
 
 int		ft_atoi(const char *numstr);
+size_t	ft_strlen(const char *str);
 t_ll	get_time_elapsed(void);
 t_ll	get_current_time(t_ll start_time);
 t_bool	countdown(t_philo *philo, t_ll end_time);
@@ -104,7 +107,6 @@ void	*death_routine(void *p);
 void	open_semaphores(t_philo *p);
 void	philosophy_routine(t_philo *p);
 void	take_forks(t_philo *philo);
-void	put_fork_down(sem_t	 *fork, t_bool *taken);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
 

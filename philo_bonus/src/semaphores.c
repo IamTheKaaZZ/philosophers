@@ -6,11 +6,19 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/27 11:44:01 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 11:47:46 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:41:20 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
+
+t_bool	sem_open_check(sem_t **semaphore, char *name, int value)
+{
+	*semaphore = sem_open(name, O_CREAT | O_EXCL, 0600, value);
+	if (*semaphore == SEM_FAILED)
+		return (my_perror("Opening named semaphore.\n"));
+	return (0);
+}
 
 /*
 	~~	The following functions open the shared named semaphores	~~
@@ -24,11 +32,10 @@
 		-> Unlinks the semaphore completely in case of failure
 */
 
-static t_bool	open_and_close(sem_t *semaphore, char *name, int value)
+t_bool	open_and_close(sem_t *semaphore, char *name, int value)
 {
-	semaphore = sem_open(name, O_CREAT | O_EXCL, 0600, value);
-	if (semaphore == SEM_FAILED)
-		return (my_perror("Opening named semaphore.\n"));
+	if (sem_open_check(&semaphore, name, value))
+		return (1);
 	if (sem_close(semaphore) < 0)
 	{
 		sem_unlink(name);
@@ -49,8 +56,14 @@ t_bool	init_semaphores(t_table *t)
 	sem_unlink(FORK_SEMA);
 	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
-	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos / 2))
+	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos))
 		return (1);
 	return (0);
 }
 
+t_bool	unlink_semaphore(const char *name)
+{
+	if (sem_unlink(name) < 0)
+		return (my_perror("sem_unlink failure.\n"));
+	return (0);
+}

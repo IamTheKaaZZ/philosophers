@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 12:59:45 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:43:16 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,49 +55,56 @@ t_bool	error_and_init(t_table *t, int argc, char **argv)
 	return (0);
 }
 
-void	make_named_sema(char const *prefix, char *buffer, int id)
+char	*make_named_sema(char const *prefix, int id)
 {
-	int	i;
+	int		i;
+	char	*result;
+	int		num_count;
 
+	i = id;
+	num_count = 0;
+	while (i)
+	{
+		i /= 10;
+		num_count++;
+	}
+	result = malloc((num_count + ft_strlen(prefix) + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
 	i = -1;
 	while (prefix[++i])
-		buffer[i] = prefix[i];
+		result[i] = prefix[i];
 	while (id > 0)
 	{
-		buffer[i++] = (id % 10) + '0';
+		result[i++] = (id % 10) + '0';
 		id /= 10;
 	}
-	buffer[i] = 0;
-	printf("%s\n", buffer);
+	result[i] = 0;
+	return (result);
 }
 
 /*
-	Handled the 1 philo edge case here instead.
+	No longer need the status to check death or end.
 */
 
 t_bool	init_philos(t_table *t, t_philo *philos, int n_philos)
 {
-	int	i;
-	char semaphore[250];
+	int		i;
 
 	i = -1;
 	while (++i < n_philos)
 	{
 		philos[i].id = i;
 		philos[i].eat_count = t->max_eat;
-		if (n_philos == 1)
-			philos[i].status = TOOK_FORK;
-		else
-			philos[i].status = THINKING;
 		philos[i].start_time = 0;
 		philos[i].time_to_eat = t->eat_time;
 		philos[i].time_to_sleep = t->sleep_time;
 		philos[i].time_to_die = t->death_time;
 		philos[i].time_ate = 0;
-		make_named_sema(TIME_SEMA, semaphore, i);
-		sem_unlink(semaphore);
-		philos[i].time_sem = sem_open(semaphore, O_CREAT | O_EXCL, 0600, 1);
-		if (semaphore == SEM_FAILED)
-			return (0);
+		philos[i].sema_name = make_named_sema(TIME_SEMA, i);
+		sem_unlink(philos[i].sema_name);
+		if (sem_open_check(&philos[i].time_sem, philos[i].sema_name, 1))
+			return (1);
 	}
+	return (0);
 }

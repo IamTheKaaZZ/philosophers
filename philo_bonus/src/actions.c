@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   actions1.c                                         :+:      :+:    :+:   */
+/*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/12 15:24:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 11:18:49 by bcosters         ###   ########.fr       */
+/*   Created: 2021/09/08 11:45:54 by bcosters          #+#    #+#             */
+/*   Updated: 2021/09/08 11:45:55 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,33 @@ t_bool	countdown(t_philo *philo, t_ll end_time)
 	return (0);
 }
 
+/*
+** only take forks when both are available!
+	the fork_taken variables are shared between philos
+**	=> they need to be locked and unlocked when something happens to them
+	=> one philo edge case gets handled first => only 1 fork so the philo waits
+*/
+
+void	take_forks(t_philo *philo)
+{
+	sem_wait(philo->forks_sem);
+	message_printer(philo, TOOK_FORK);
+	sem_wait(philo->forks_sem);
+	message_printer(philo, TOOK_FORK);
+}
+
 void	eating(t_philo *philo)
 {
-	message_printer(philo, EATING);
 	sem_wait(philo->time_sem);
+	message_printer(philo, EATING);
 	philo->time_ate = get_current_time(philo->start_time);
 	philo->eat_count--;
-	sem_post(philo->time_sem);
 	usleep(philo->time_to_eat);
 	if (countdown(philo, philo->time_ate + philo->time_to_eat))
 		return ;
+	sem_post(philo->forks_sem);
+	sem_post(philo->forks_sem);
+	sem_post(philo->time_sem);
 }
 
 /*
@@ -49,7 +66,6 @@ void	sleeping(t_philo *philo)
 	t_ll	end_sleep;
 
 	message_printer(philo, SLEEPING);
-	sem_post(philo->forks_sem);
 	usleep(philo->time_to_sleep);
 	end_sleep = get_current_time(philo->start_time) + philo->time_to_sleep;
 	if (countdown(philo, end_sleep))

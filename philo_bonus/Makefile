@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/08/27 11:29:27 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/08 11:49:08 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SRCS	= ${shell find src -type f -name "*.c"}
 OBJS	= ${SRCS:src/%.c=obj/%.o}
 CC		= gcc
 RM		= rm -f
-CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=thread
+CFLAGS	= -Wall -Wextra -Werror -pthread #-fsanitize=thread
 
 # -*- The Rules -*-
 
@@ -43,7 +43,7 @@ obj/%.o: src/%.c $(HEADER)
 all:		$(NAME)
 
 $(NAME):	$(OBJDR) $(OBJS) $(HEADER)
-			@$(CC) $(CFLAGS) $(MAINSRC) -g ${wildcard src/*.c} -o $(NAME)
+			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -o $(NAME)
 			#--------------------------------#
 			@echo "Finished compiling MANDATORY $(NAME)"
 

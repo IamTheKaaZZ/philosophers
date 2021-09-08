@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:00:59 by bcosters          #+#    #+#             */
-/*   Updated: 2021/08/27 10:44:42 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:28:59 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,22 @@
 
 void	clear_data(t_table *t)
 {
+	int	i;
+
 	if (t->philos)
 	{
+		i = -1;
+		while (++i < t->n_philos)
+		{
+			sem_close(t->philos[i].time_sem);
+			free(t->philos[i].sema_name);
+			sem_unlink(t->philos[i].sema_name);
+		}
 		free(t->philos);
 		t->philos = NULL;
 	}
 	sem_unlink(MESSAGE_SEMA);
 	sem_unlink(FORK_SEMA);
-	sem_unlink(TIME_SEMA);
 }
 
 int	my_perror(const char *str)
