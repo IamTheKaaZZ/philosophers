@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 17:52:46 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 18:01:51 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ void	*death_routine(void *philo)
 	p = (t_philo *)philo;
 	while (!end)
 	{
-		// pthread_mutex_lock(&p->check_m);
+		pthread_mutex_lock(&p->check_m);
 		if (check_death(p) || p->eat_count == 0)
 			end = TRUE;
-		// pthread_mutex_unlock(&p->check_m);
+		pthread_mutex_unlock(&p->check_m);
 	}
 	return (NULL);
 }
