@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:48:48 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 12:34:31 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # define ONE_MS 1000
 # define FORK_SEMA "pSemFork"
 # define MESSAGE_SEMA "pSemMessage"
+# define END_SEMA "pSemEnd"
 # define TIME_SEMA "pSemTime"
 
 typedef long long		t_ll;
@@ -59,6 +60,7 @@ typedef struct s_philo
 	sem_t		*message_sem;
 	char		*sema_name;
 	sem_t		*time_sem;
+	sem_t		*end_sem;
 }				t_philo;
 
 typedef struct s_table
@@ -71,6 +73,7 @@ typedef struct s_table
 	t_philo		*philos;
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
+	sem_t		*end_sem;
 }				t_table;
 
 /*

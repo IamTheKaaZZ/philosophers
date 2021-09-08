@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   routines.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/08 11:46:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:46:17 by bcosters         ###   ########.fr       */
+/*   Created: 2021/09/08 12:30:02 by bcosters          #+#    #+#             */
+/*   Updated: 2021/09/08 12:42:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ void	open_semaphores(t_philo *p)
 	p->forks_sem = sem_open(FORK_SEMA, O_RDWR);
 	if (p->forks_sem == SEM_FAILED)
 		exit(unlink_semaphore(FORK_SEMA) + 1);
+	p->end_sem = sem_open(END_SEMA, O_RDWR);
+	if (p->end_sem == SEM_FAILED)
+		exit(unlink_semaphore(END_SEMA) + 1);
 }
 
 void	philosophy_routine(t_philo *p)

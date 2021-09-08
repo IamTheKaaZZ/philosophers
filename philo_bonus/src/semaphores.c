@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/27 11:44:01 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:41:20 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 12:35:45 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,12 @@ t_bool	init_semaphores(t_table *t)
 {
 	sem_unlink(MESSAGE_SEMA);
 	sem_unlink(FORK_SEMA);
+	sem_unlink(END_SEMA);
 	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
 	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos))
+		return (1);
+	if (sem_open_check(&t->end_sem, END_SEMA, 0))
 		return (1);
 	return (0);
 }

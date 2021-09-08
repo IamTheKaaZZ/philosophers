@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 11:08:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:50:48 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 12:47:20 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,17 @@ void	*death_routine(void *p)
 	philo = (t_philo *)p;
 	while (TRUE)
 	{
+		if (philo->eat_count == 0)
+			break ;
 		sem_wait(philo->time_sem);
-		if (check_death(philo) || philo->eat_count == 0)
+		if (check_death(philo))
 		{
-			kill(0, SIGINT);
+			// kill(0, SIGINT);
 			break ;
 		}
 		sem_post(philo->time_sem);
 	}
+	sem_post(philo->end_sem);
+	printf("end got posted\n");
 	return (NULL);
 }

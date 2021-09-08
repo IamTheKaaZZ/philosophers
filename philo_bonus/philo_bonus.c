@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:48:16 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 12:48:12 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ t_bool	wait_children(t_table *t)
 		if (signal < 0)
 			return (my_perror("Waitpid failure.\n"));
 	}
+	printf("waiting for the end\n");
+	sem_wait(t->end_sem);
+	i = 1;
+	while (++i < t->n_philos)
+		kill(t->philos[i].pid, SIGTERM);
 	return (0);
 }
 
