@@ -6,14 +6,14 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 10:35:03 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 10:36:21 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 15:25:07 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo_bonus.h"
 
 /*
-**Checks is char c is a digit*
+**	Checks is char c is a digit*
 */
 
 static int	ft_isdigit(int c)
@@ -36,8 +36,8 @@ static int	ft_isspace(int c)
 }
 
 /*
-**Function to convert a string to a number, including negatives*
-**only converts if first two chars are - and a digit or digits*
+**	Function to convert a string to a number, including negatives*
+**	only converts if first two chars are - and a digit or digits*
 */
 
 int	ft_atoi(const char *numstr)

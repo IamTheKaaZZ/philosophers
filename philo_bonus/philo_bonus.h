@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:24:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 12:34:31 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 14:07:23 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # define MESSAGE_SEMA "pSemMessage"
 # define END_SEMA "pSemEnd"
 # define TIME_SEMA "pSemTime"
+# define FULL_SEMA "pSemFull"
 
 typedef long long		t_ll;
 typedef unsigned long	t_ul;
@@ -60,6 +61,7 @@ typedef struct s_philo
 	sem_t		*message_sem;
 	char		*sema_name;
 	sem_t		*time_sem;
+	sem_t		*full_sem;
 	sem_t		*end_sem;
 }				t_philo;
 
@@ -74,6 +76,7 @@ typedef struct s_table
 	sem_t		*forks_sem;
 	sem_t		*message_sem;
 	sem_t		*end_sem;
+	sem_t		*full_sem;
 }				t_table;
 
 /*
@@ -112,5 +115,7 @@ void	philosophy_routine(t_philo *p);
 void	take_forks(t_philo *philo);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
+void	*full_routine(void *table);
+void	*end_routine(void *table);
 
 #endif

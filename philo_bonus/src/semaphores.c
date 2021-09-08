@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/27 11:44:01 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 12:35:45 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 14:39:52 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,8 @@ t_bool	open_and_close(sem_t *semaphore, char *name, int value)
 }
 
 /*
-	The forks_sema gets initialized with a value of n_philos / 2
+	The forks_sema gets initialized with a value of n_philos
 	=> 2 forks per philo
-	=> semaphore only needs to be accessed once per time they want forks
 */
 
 t_bool	init_semaphores(t_table *t)
@@ -55,11 +54,14 @@ t_bool	init_semaphores(t_table *t)
 	sem_unlink(MESSAGE_SEMA);
 	sem_unlink(FORK_SEMA);
 	sem_unlink(END_SEMA);
+	sem_unlink(FULL_SEMA);
 	if (open_and_close(t->message_sem, MESSAGE_SEMA, 1))
 		return (1);
 	if (open_and_close(t->forks_sem, FORK_SEMA, t->n_philos))
 		return (1);
 	if (sem_open_check(&t->end_sem, END_SEMA, 0))
+		return (1);
+	if (sem_open_check(&t->full_sem, FULL_SEMA, 0))
 		return (1);
 	return (0);
 }

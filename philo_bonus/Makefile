@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/09/08 11:49:08 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/08 15:22:43 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SRCS	= ${shell find src -type f -name "*.c"}
 OBJS	= ${SRCS:src/%.c=obj/%.o}
 CC		= gcc
 RM		= rm -f
-CFLAGS	= -Wall -Wextra -Werror -pthread #-fsanitize=thread
+CFLAGS	= -Wall -Wextra -Werror -pthread #-fsanitize=thread -g
 
 # -*- The Rules -*-
 

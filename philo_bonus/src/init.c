@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/28 12:22:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 11:43:16 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 15:27:46 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,17 @@ static t_bool	setup_table(t_table *t, int argc, char **argv)
 	t->sleep_time = ft_atoi(argv[4]);
 	if (t->n_philos < 1 || t->n_philos > 200)
 		return (my_perror("Too little or too many Philosophers.\n"));
-	if (t->death_time < 0)
-		return (my_perror("(Death time < 0) No immortality.\n"));
-	if (t->eat_time < 0)
-		return (my_perror("(Eat time < 0) No time travelling.\n"));
-	if (t->sleep_time < 0)
-		return (my_perror("(Sleep time < 0) Philosopher != Student.\n"));
+	if (t->death_time <= 0)
+		return (my_perror("(Death time <= 0) No immortality.\n"));
+	if (t->eat_time <= 0)
+		return (my_perror("(Eat time <= 0) No time travelling.\n"));
+	if (t->sleep_time <= 0)
+		return (my_perror("(Sleep time <= 0) Philosopher != Student.\n"));
 	if (argc == 6)
 	{
 		t->max_eat = ft_atoi(argv[5]);
-		if (t->max_eat < 0)
-			return (my_perror("(Must eat < 0) (┛ಠ_ಠ)┛彡┻━┻ No spaghetti.\n"));
+		if (t->max_eat <= 0)
+			return (my_perror("(Must eat <= 0) (┛ಠ_ಠ)┛彡┻━┻ No spaghetti.\n"));
 	}
 	else
 		t->max_eat = -1;

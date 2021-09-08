@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 12:48:12 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/08 15:19:10 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,27 @@
 
 /*
 	Wait AND KILL THE CHILDREN MUHAHAHAHA
+	-> start full_routine if there is a max_eat
+	-> start end_routine that will pick up a death or the full state
+	-> Wait for all the PIDs to exit
 */
 
 t_bool	wait_children(t_table *t)
 {
-	int		wstatus;
-	int		i;
-	int		signal;
+	int			wstatus;
+	int			i;
+	int			signal;
+	pthread_t	end_or_full;
 
+	if (t->max_eat != -1)
+	{
+		if (pthread_create(&end_or_full, NULL, full_routine, (void *)t) != 0)
+			exit(EXIT_FAILURE);
+		pthread_detach(end_or_full);
+	}
+	if (pthread_create(&end_or_full, NULL, end_routine, (void *)t) != 0)
+		exit(EXIT_FAILURE);
+	pthread_detach(end_or_full);
 	i = -1;
 	while (++i < t->n_philos)
 	{
@@ -29,11 +42,6 @@ t_bool	wait_children(t_table *t)
 		if (signal < 0)
 			return (my_perror("Waitpid failure.\n"));
 	}
-	printf("waiting for the end\n");
-	sem_wait(t->end_sem);
-	i = 1;
-	while (++i < t->n_philos)
-		kill(t->philos[i].pid, SIGTERM);
 	return (0);
 }
 
