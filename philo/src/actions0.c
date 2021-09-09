@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:17:30 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 17:43:00 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/09 13:39:24 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,16 @@ void	put_fork_down(pthread_mutex_t *fork, t_bool *taken)
 	pthread_mutex_unlock(fork);
 }
 
-static void	check_available_forks(t_philo *philo, t_bool *has_two_forks)
+static t_bool	check_available_forks(t_philo *philo)
 {
 	if (take_one_fork(philo->right_fork_m, philo->right_fork_taken))
 	{
 		if (take_one_fork(philo->left_fork_m, philo->left_fork_taken))
-			*has_two_forks = TRUE;
+			return (TRUE);
 		else
 			put_fork_down(philo->right_fork_m, philo->right_fork_taken);
 	}
+	return (FALSE);
 }
 
 /*
@@ -67,19 +68,15 @@ static void	check_available_forks(t_philo *philo, t_bool *has_two_forks)
 
 void	take_forks(t_philo *philo)
 {
-	t_bool	has_two_forks;
-
-	has_two_forks = FALSE;
-	while (!has_two_forks)
+	if (one_philo_case(philo))
+		return ;
+	while (TRUE)
 	{
-		if (one_philo_case(philo))
-			return ;
-		else
-			check_available_forks(philo, &has_two_forks);
-		if (has_two_forks)
+		if (check_available_forks(philo))
 		{
 			message_printer(philo, TOOK_FORK);
 			message_printer(philo, TOOK_FORK);
+			return ;
 		}
 	}
 }

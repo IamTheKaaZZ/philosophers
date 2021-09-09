@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/19 12:37:44 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/08 18:01:51 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/09 13:45:47 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@ void	*death_routine(void *philo)
 	while (!end)
 	{
 		pthread_mutex_lock(&p->check_m);
-		if (check_death(p) || p->eat_count == 0)
+		if (p->eat_count == 0 || check_death(p))
 			end = TRUE;
 		pthread_mutex_unlock(&p->check_m);
+		usleep(1000);
 	}
 	return (NULL);
 }
@@ -34,22 +35,12 @@ void	*philosophy_routine(void *philo)
 	t_philo	*p;
 
 	p = (t_philo *)philo;
-	while (p->eat_count != 0)
+	while (p->eat_count != 0 && p->status != DEAD)
 	{
-		if (p->status == DEAD)
-			break ;
 		take_forks(p);
-		if (p->status == DEAD)
-			break ;
 		eating(p);
-		if (p->status == DEAD)
-			break ;
 		sleeping(p);
-		if (p->status == DEAD)
-			break ;
 		message_printer(p, THINKING);
-		if (p->status == DEAD)
-			break ;
 	}
 	return (NULL);
 }
